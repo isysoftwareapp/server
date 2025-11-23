@@ -132,7 +132,7 @@ if [ ! -f "healthcare/Dockerfile" ]; then
 FROM node:18-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 FROM node:18-alpine AS builder
 WORKDIR /app
@@ -164,7 +164,7 @@ if [ ! -f "retail/Dockerfile" ]; then
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 COPY . .
 RUN npm run build
 
@@ -183,7 +183,7 @@ if [ -d "retail/server" ] && [ ! -f "retail/server/Dockerfile" ]; then
 FROM node:18-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --production
+RUN npm install --production
 COPY . .
 EXPOSE 3001
 CMD ["node", "index.js"]
