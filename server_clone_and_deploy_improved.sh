@@ -243,7 +243,7 @@ services:
     restart: unless-stopped
     environment:
       - PORT=3001
-      - MONGO_URI=mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-SecurePassword123!}@mongodb:27017/${MONGO_DB:-isy_clinic}?authSource=admin
+      - MONGO_URI=mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-SecurePassword123!}@mongodb:27017/retail?authSource=admin
       - JWT_SECRET=${RETAIL_JWT_SECRET}
       - NODE_ENV=production
     depends_on:
