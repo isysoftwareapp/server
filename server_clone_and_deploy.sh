@@ -6,7 +6,7 @@
 # This script will delete existing app folder, clone latest from GitHub,
 # apply SSL nginx config (if present), and run a full from-scratch Docker Compose build and up.
 
-REPO_URL="https://github.com/isysoftwareapp/isy.healthcare.git"
+REPO_URL="https://github.com/isysoftwareapp/server.git"
 # By default promote the cloned release into the user's home directory so the
 # repository contents appear at login (no extra enclosing folder).
 APP_DIR="${APP_DIR:-$HOME}"

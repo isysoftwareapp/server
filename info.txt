@@ -1,0 +1,5 @@
+first server
+ssh adminroot@103.126.116.50
+
+second server
+ssh adminroot@103.94.239.157
