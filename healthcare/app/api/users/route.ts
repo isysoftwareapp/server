@@ -15,7 +15,8 @@ export async function GET() {
     // Get all users (admin only) or users from the same clinic
     const users = await User.find({})
       .select("-password")
-      .populate("clinic", "name")
+      .populate("assignedClinics", "name")
+      .populate("primaryClinic", "name")
       .sort({ createdAt: -1 })
       .lean();
 
