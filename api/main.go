@@ -108,6 +108,7 @@ func (a *App) setupRoutes() {
 	api.HandleFunc("/content", a.saveContent).Methods("POST")
 	api.HandleFunc("/upload", a.uploadFile).Methods("POST")
 	api.HandleFunc("/upload/{filename}", a.deleteFile).Methods("DELETE")
+	api.HandleFunc("/migrate-base64", a.migrateBase64ToFiles).Methods("POST")
 }
 
 func (a *App) Run(addr string) {

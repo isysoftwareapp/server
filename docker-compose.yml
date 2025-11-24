@@ -94,6 +94,8 @@ services:
       # Use named volumes for certbot artifacts so certificates survive redeploys
       - certbot_etc:/etc/letsencrypt
       - certbot_www:/var/www/certbot
+      # Mount uploads for public access
+      - api_uploads:/var/uploads:ro
     depends_on:
       - healthcare
       - retail
