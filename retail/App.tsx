@@ -27,6 +27,7 @@ import {
   Check,
   DollarSign,
   Image as ImageIcon,
+  Plus,
 } from "lucide-react";
 import FluidBackground from "./components/FluidBackground";
 import AIChat from "./components/AIChat";
@@ -97,6 +98,34 @@ const App: React.FC = () => {
         behavior: "smooth",
       });
     }
+  };
+
+  const addHardwareItem = () => {
+    const newItem = {
+      title: "New Hardware",
+      description: "Description of the new hardware item.",
+      icon: "Monitor"
+    };
+    const updatedContent = {
+      ...content,
+      hardware: {
+        ...content.hardware,
+        items: [...content.hardware.items, newItem]
+      }
+    };
+    updateContent(updatedContent);
+  };
+
+  const deleteHardwareItem = (idx: number) => {
+    const updatedItems = content.hardware.items.filter((_, i) => i !== idx);
+    const updatedContent = {
+      ...content,
+      hardware: {
+        ...content.hardware,
+        items: updatedItems
+      }
+    };
+    updateContent(updatedContent);
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -696,11 +725,11 @@ const App: React.FC = () => {
                 {content.hardware.items.map((item, idx) => {
                   const IconComp = getIcon(item.icon);
                   return (
-                    <div key={idx} className="flex gap-6 group">
+                    <div key={idx} className="flex gap-6 group relative">
                       <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center group-hover:bg-[#ADE8F4] transition-colors shrink-0">
                         <IconComp className="w-7 h-7 text-[#ADE8F4] group-hover:text-black transition-colors" />
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <h4 className="text-2xl font-bold mb-2">
                           {item.title}
                         </h4>
@@ -708,10 +737,27 @@ const App: React.FC = () => {
                           {item.description}
                         </p>
                       </div>
+                      {isAdmin && (
+                        <button
+                          onClick={() => deleteHardwareItem(idx)}
+                          className="w-8 h-8 rounded-full bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      )}
                     </div>
                   );
                 })}
               </div>
+              {isAdmin && (
+                <button
+                  onClick={addHardwareItem}
+                  className="mt-8 w-full bg-[#ADE8F4] text-black py-3 rounded-xl font-bold hover:bg-white transition-colors flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  Add Hardware Item
+                </button>
+              )}
             </div>
             <div className="relative perspective-1000">
               <motion.div
@@ -782,9 +828,10 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <AnimatePresence mode="popLayout">
               {filteredProducts.map((product) => {
-                const allImages = [product.image, ...(product.images || [])].filter(
-                  (img) => img && img.trim()
-                );
+                const allImages = [
+                  product.image,
+                  ...(product.images || []),
+                ].filter((img) => img && img.trim());
                 const mainImage = allImages[0] || "";
                 const totalImages = allImages.length;
 
