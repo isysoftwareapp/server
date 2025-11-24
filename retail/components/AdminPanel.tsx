@@ -259,8 +259,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       category: "kiosk",
       name: "New Product Model",
       description: "Product description here.",
-      image:
-        "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2000&auto=format&fit=crop",
+      image: "",
       images: [],
       specs: ["Spec 1", "Spec 2"],
       pricePurchase: "0",
