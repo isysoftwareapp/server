@@ -33,6 +33,15 @@ import AIChat from "./components/AIChat";
 import CustomCursor from "./components/CustomCursor";
 import AdminPanel from "./components/AdminPanel";
 import ProductDetailModal from "./components/ProductDetailModal";
+import {
+  HeroSkeleton,
+  EcosystemSkeleton,
+  FeaturesSkeleton,
+  HardwareSkeleton,
+  CatalogSkeleton,
+  PricingSkeleton,
+  ContactSkeleton,
+} from "./components/SkeletonLoaders";
 import { useSiteContent } from "./hooks/useSiteContent";
 import { FeatureBlock, EcosystemItem, ProductItem } from "./types";
 
@@ -131,6 +140,22 @@ const App: React.FC = () => {
   const filteredProducts = content.products.filter(
     (p) => productFilter === "all" || p.category === productFilter
   );
+
+  // Show loading state until content is loaded
+  if (!isLoaded) {
+    return (
+      <div className="relative min-h-screen font-brand text-black selection:bg-[#ADE8F4] selection:text-black bg-white">
+        <FluidBackground />
+        <HeroSkeleton />
+        <EcosystemSkeleton />
+        <FeaturesSkeleton />
+        <HardwareSkeleton />
+        <CatalogSkeleton />
+        <PricingSkeleton />
+        <ContactSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen font-brand text-black selection:bg-[#ADE8F4] selection:text-black">
@@ -787,7 +812,7 @@ const App: React.FC = () => {
                     <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#498FB3] transition-colors">
                       {product.name}
                     </h3>
-                    <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+                    <p className="text-sm text-gray-500 mb-4 line-clamp-2 whitespace-pre-line">
                       {product.description}
                     </p>
 

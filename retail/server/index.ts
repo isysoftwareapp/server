@@ -8,6 +8,13 @@ import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cors from "cors";
+import multer from "multer";
+import path from "path";
+import { fileURLToPath } from "url";
+import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,8 +22,44 @@ const MONGO_URI = process.env.MONGO_URI || "mongodb://mongodb:27017/retail";
 const JWT_SECRET =
   process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
+// Create uploads directory if it doesn't exist
+const UPLOADS_DIR = path.join(__dirname, "uploads");
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  console.log("📁 Created uploads directory:", UPLOADS_DIR);
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOADS_DIR);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images only
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed!") as any, false);
+    }
+    cb(null, true);
+  },
+});
+
 app.use(cors());
-app.use(express.json({ limit: "50mb" }));
+app.use(express.json({ limit: "10mb" })); // Reduced limit since we're not storing base64 anymore
+
+// Serve static files from uploads directory
+app.use("/uploads", express.static(UPLOADS_DIR));
 
 let db: any;
 let client: MongoClient;
@@ -172,6 +215,62 @@ app.post(
     } catch (error) {
       console.error("Save content error:", error);
       res.status(500).json({ error: "Failed to save content" });
+    }
+  }
+);
+
+// File upload endpoint
+app.post(
+  "/api/upload",
+  authenticateToken,
+  upload.single("file"),
+  async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+
+      // Return the URL path that can be used to access the file
+      const fileUrl = `/uploads/${req.file.filename}`;
+
+      console.log("✅ File uploaded successfully:", req.file.filename);
+
+      res.json({
+        success: true,
+        url: fileUrl,
+        filename: req.file.filename,
+        size: req.file.size,
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      res.status(500).json({ error: "Failed to upload file" });
+    }
+  }
+);
+
+// Delete file endpoint
+app.delete(
+  "/api/upload/:filename",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const { filename } = req.params;
+      const filePath = path.join(UPLOADS_DIR, filename);
+
+      // Check if file exists
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: "File not found" });
+      }
+
+      // Delete the file
+      fs.unlinkSync(filePath);
+
+      console.log("🗑️  File deleted successfully:", filename);
+
+      res.json({ success: true, message: "File deleted successfully" });
+    } catch (error) {
+      console.error("Delete error:", error);
+      res.status(500).json({ error: "Failed to delete file" });
     }
   }
 );

@@ -1,0 +1,22 @@
+# Development Dockerfile for Retail API
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY server/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy server source
+COPY server/ ./server/
+
+# Create uploads directory
+RUN mkdir -p /app/server/uploads
+
+# Expose port
+EXPOSE 3001
+
+# Start development server with hot reload
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,67 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: retail-mongodb-dev
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+      - MONGO_INITDB_DATABASE=retail
+    volumes:
+      - mongodb_data_dev:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - retail-network
+
+  retail-api:
+    build:
+      context: ./retail
+      dockerfile: server/Dockerfile.dev
+    container_name: retail-api-dev
+    restart: unless-stopped
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://admin:admin123@mongodb:27017/retail?authSource=admin
+      - JWT_SECRET=dev-secret-key-change-in-production
+      - NODE_ENV=development
+    volumes:
+      # Mount source code for hot reload
+      - ./retail/server:/app/server:ro
+      # Mount uploads directory to persist files
+      - retail_uploads_dev:/app/server/uploads
+    depends_on:
+      - mongodb
+    ports:
+      - "3001:3001"
+    networks:
+      - retail-network
+
+  retail-frontend:
+    build:
+      context: ./retail
+      dockerfile: Dockerfile.dev
+    container_name: retail-frontend-dev
+    restart: unless-stopped
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    volumes:
+      # Mount source code for hot reload
+      - ./retail:/app:ro
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    networks:
+      - retail-network
+    depends_on:
+      - retail-api
+
+volumes:
+  mongodb_data_dev:
+    driver: local
+  retail_uploads_dev:
+    driver: local
+
+networks:
+  retail-network:
+    driver: bridge

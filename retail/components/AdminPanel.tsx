@@ -115,18 +115,23 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     });
   };
 
-  // Helper for generic file uploads (returns base64)
-  const handleFileUpload = (
+  // Helper for generic file uploads (uploads to server and returns URL)
+  const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    callback: (base64: string) => void
+    callback: (url: string) => void
   ) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        callback(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      console.log("📤 Starting file upload...");
+      const { uploadFile } = await import("../services/storage");
+      const url = await uploadFile(file);
+      if (url) {
+        console.log("✅ File uploaded, URL:", url);
+        callback(url);
+      } else {
+        console.error("❌ File upload failed");
+        alert("Failed to upload file. Please try again.");
+      }
     }
   };
 

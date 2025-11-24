@@ -5,15 +5,16 @@
 
 import { SiteContent } from "../types";
 
-const API_BASE = import.meta.env.DEV
-  ? "https://isy.software/retail/api"
-  : "/retail/api";
+// Use centralized API
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const RETAIL_API_PATH = "/retail/v1";
 
 export const fetchSiteContent = async (): Promise<SiteContent | null> => {
   console.log("🚀 fetchSiteContent called");
   try {
-    console.log("📡 Making GET request to:", `${API_BASE}/content`);
-    const response = await fetch(`${API_BASE}/content`);
+    const url = `${API_BASE}${RETAIL_API_PATH}/metadata`;
+    console.log("📡 Making GET request to:", url);
+    const response = await fetch(url);
     console.log("📡 Response status:", response.status);
     console.log("📡 Response ok:", response.ok);
 
@@ -26,7 +27,13 @@ export const fetchSiteContent = async (): Promise<SiteContent | null> => {
 
     const data = await response.json();
     console.log("✅ Fetch successful, data:", data);
-    return data.content;
+
+    // Centralized API returns { success: true, data: {...} }
+    if (data.success && data.data) {
+      return data.data.content || data.data;
+    }
+
+    return data.content || data;
   } catch (error) {
     console.error("💥 Error fetching site content:", error);
     return null;
@@ -46,8 +53,9 @@ export const saveSiteContent = async (
       return false;
     }
 
-    console.log("📡 Making POST request to:", `${API_BASE}/content`);
-    const response = await fetch(`${API_BASE}/content`, {
+    const url = `${API_BASE}${RETAIL_API_PATH}/metadata`;
+    console.log("📡 Making POST request to:", url);
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,8 +74,9 @@ export const saveSiteContent = async (
       throw new Error("Failed to save content");
     }
 
-    console.log("✅ Save successful");
-    return true;
+    const data = await response.json();
+    console.log("✅ Save successful, response:", data);
+    return data.success !== false;
   } catch (error) {
     console.error("💥 Error saving site content:", error);
     return false;
@@ -80,8 +89,24 @@ export const authenticateAdmin = async (
 ): Promise<{ success: boolean; token?: string }> => {
   console.log("🚀 authenticateAdmin called with username:", username);
   try {
-    console.log("📡 Making POST request to:", `${API_BASE}/auth`);
-    const response = await fetch(`${API_BASE}/auth`, {
+    // TODO: Implement authentication endpoint in centralized API
+    // For now, use a simple check (replace with real API call)
+    console.log("⚠️  Using local authentication (temporary)");
+
+    // Temporary: Simple check for admin/admin
+    if (username === "admin" && password === "admin") {
+      const tempToken = btoa(`${username}:${Date.now()}`);
+      console.log("✅ Authentication successful (temporary)");
+      return { success: true, token: tempToken };
+    }
+
+    console.log("❌ Authentication failed");
+    return { success: false };
+
+    /* Future implementation with centralized API:
+    const url = `${API_BASE}${RETAIL_API_PATH}/auth`;
+    console.log("📡 Making POST request to:", url);
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -109,6 +134,7 @@ export const authenticateAdmin = async (
     }
 
     return { success: true, token: data.token };
+    */
   } catch (error) {
     console.error("💥 Error authenticating:", error);
     return { success: false };

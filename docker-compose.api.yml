@@ -1,0 +1,45 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: api-mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+      - MONGO_INITDB_DATABASE=isy_api
+    volumes:
+      - mongodb_api_data:/data/db
+    ports:
+      - "27018:27017"
+    networks:
+      - api-network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: isy-api
+    restart: unless-stopped
+    environment:
+      - PORT=8080
+      - MONGO_URI=mongodb://admin:admin123@mongodb:27017/isy_api?authSource=admin
+      - DB_NAME=isy_api
+      - JWT_SECRET=api-secret-key-change-in-production
+    volumes:
+      - api_uploads:/root/uploads
+    depends_on:
+      - mongodb
+    ports:
+      - "8080:8080"
+    networks:
+      - api-network
+
+volumes:
+  mongodb_api_data:
+    driver: local
+  api_uploads:
+    driver: local
+
+networks:
+  api-network:
+    driver: bridge
