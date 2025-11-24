@@ -781,85 +781,93 @@ const App: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  onClick={() => setSelectedProduct(product)}
-                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer group"
-                >
-                  <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                      {product.category}
-                    </div>
-                    {product.images && product.images.length > 0 && (
-                      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
-                        <ImageIcon className="w-3 h-3" />
-                        {product.images.length + 1}
+              {filteredProducts.map((product) => {
+                const allImages = [product.image, ...(product.images || [])].filter(
+                  (img) => img && img.trim()
+                );
+                const mainImage = allImages[0] || "";
+                const totalImages = allImages.length;
+
+                return (
+                  <motion.div
+                    key={product.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    onClick={() => setSelectedProduct(product)}
+                    className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer group"
+                  >
+                    <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
+                      <img
+                        src={mainImage}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        {product.category}
                       </div>
-                    )}
-                  </div>
-
-                  <div className="p-6 flex-1 flex flex-col">
-                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#498FB3] transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 mb-4 line-clamp-2 whitespace-pre-line">
-                      {product.description}
-                    </p>
-
-                    <div className="space-y-2 mb-6 flex-1">
-                      {product.specs.slice(0, 3).map((spec, idx) => (
-                        <div
-                          key={idx}
-                          className="flex items-start gap-2 text-xs text-gray-600"
-                        >
-                          <div className="w-1 h-1 bg-[#498FB3] rounded-full mt-1.5 shrink-0"></div>
-                          {spec}
+                      {totalImages > 1 && (
+                        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                          <ImageIcon className="w-3 h-3" />
+                          {totalImages}
                         </div>
-                      ))}
+                      )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
-                      <div className="text-center p-2 rounded-lg bg-gray-50">
-                        <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                          Buy
-                        </div>
-                        <div className="font-bold text-slate-900">
-                          ฿ {product.pricePurchase}
-                        </div>
-                      </div>
-                      <div className="text-center p-2 rounded-lg bg-[#ADE8F4]/20 border border-[#ADE8F4]/50">
-                        <div className="text-[10px] font-bold text-[#498FB3] uppercase tracking-wider">
-                          Rent
-                        </div>
-                        <div className="font-bold text-[#498FB3]">
-                          ฿ {product.priceRent}
-                          <span className="text-[10px]">/mo</span>
-                        </div>
-                      </div>
-                    </div>
+                    <div className="p-6 flex-1 flex flex-col">
+                      <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#498FB3] transition-colors">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-4 line-clamp-2 whitespace-pre-line">
+                        {product.description}
+                      </p>
 
-                    {product.variants && product.variants.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <div className="text-xs text-gray-500 font-bold flex items-center gap-2">
-                          <Settings className="w-3 h-3" />
-                          {product.variants.length} variant
-                          {product.variants.length > 1 ? "s" : ""} available
+                      <div className="space-y-2 mb-6 flex-1">
+                        {product.specs.slice(0, 3).map((spec, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-start gap-2 text-xs text-gray-600"
+                          >
+                            <div className="w-1 h-1 bg-[#498FB3] rounded-full mt-1.5 shrink-0"></div>
+                            {spec}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 pt-4 border-t border-gray-100">
+                        <div className="text-center p-2 rounded-lg bg-gray-50">
+                          <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                            Buy
+                          </div>
+                          <div className="font-bold text-slate-900">
+                            ฿ {product.pricePurchase}
+                          </div>
+                        </div>
+                        <div className="text-center p-2 rounded-lg bg-[#ADE8F4]/20 border border-[#ADE8F4]/50">
+                          <div className="text-[10px] font-bold text-[#498FB3] uppercase tracking-wider">
+                            Rent
+                          </div>
+                          <div className="font-bold text-[#498FB3]">
+                            ฿ {product.priceRent}
+                            <span className="text-[10px]">/mo</span>
+                          </div>
                         </div>
                       </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+
+                      {product.variants && product.variants.length > 0 && (
+                        <div className="mt-4 pt-4 border-t border-gray-100">
+                          <div className="text-xs text-gray-500 font-bold flex items-center gap-2">
+                            <Settings className="w-3 h-3" />
+                            {product.variants.length} variant
+                            {product.variants.length > 1 ? "s" : ""} available
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
         </div>
