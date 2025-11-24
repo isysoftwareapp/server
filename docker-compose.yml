@@ -71,8 +71,8 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      # Use the SSL-enabled nginx config from the repo as the main nginx config
-      - ./nginx-ssl.conf:/etc/nginx/nginx.conf:ro
+      # Use nginx.conf from the repo (can be switched between HTTP-only and SSL)
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
       # Use named volumes for certbot artifacts so certificates survive redeploys
       - certbot_etc:/etc/letsencrypt
       - certbot_www:/var/www/certbot

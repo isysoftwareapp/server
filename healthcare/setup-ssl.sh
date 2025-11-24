@@ -3,10 +3,10 @@
 
 echo "=== Setting up SSL certificate for health.isy.software ==="
 
-cd /home/adminroot/isy.healthcare
+cd ..
 
 # Create certbot directories
-mkdir -p certbot/conf certbot/www
+mkdir -p healthcare/certbot/conf healthcare/certbot/www
 
 # Stop existing containers
 echo "Stopping containers..."
