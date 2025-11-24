@@ -15,7 +15,7 @@ services:
 
   app:
     build:
-      context: .
+      context: ./healthcare
       args:
         USE_BCRYPTJS: "1"
     container_name: isy-healthcare
