@@ -70,7 +70,10 @@ const getIcon = (iconName: string) => {
 const App: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { content, updateContent, resetContent, isLoaded } = useSiteContent();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(() => {
+    const token = localStorage.getItem("admin_token");
+    return !!token;
+  });
   const [showLogin, setShowLogin] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -87,12 +90,10 @@ const App: React.FC = () => {
     null
   );
 
-  // Check for admin token on mount
+  // Check for admin token updates (in case it changes during session)
   React.useEffect(() => {
     const token = localStorage.getItem("admin_token");
-    if (token) {
-      setIsAdmin(true);
-    }
+    setIsAdmin(!!token);
   }, []);
 
   const scrollToSection = (id: string) => {
