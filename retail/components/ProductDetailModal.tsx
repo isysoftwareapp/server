@@ -39,10 +39,9 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [isImageFullscreen, setIsImageFullscreen] = useState(false);
   const [imageZoom, setImageZoom] = useState(false);
 
-  const allImages =
-    product.images && product.images.length > 0
-      ? [product.image, ...product.images]
-      : [product.image];
+  const allImages = [product.image, ...(product.images || [])].filter(
+    (img) => img && img.trim()
+  );
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
