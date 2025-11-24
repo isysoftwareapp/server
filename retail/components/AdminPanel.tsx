@@ -227,6 +227,31 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setLocalContent((prev) => ({ ...prev, features: newItems }));
   };
 
+  // --- Pricing Features Management ---
+  const addPricingFeature = (tierIndex: number) => {
+    const newPricing = [...localContent.pricing];
+    newPricing[tierIndex].features.push("New Feature");
+    setLocalContent((prev) => ({ ...prev, pricing: newPricing }));
+  };
+
+  const removePricingFeature = (tierIndex: number, featureIndex: number) => {
+    const newPricing = [...localContent.pricing];
+    newPricing[tierIndex].features = newPricing[tierIndex].features.filter(
+      (_, i) => i !== featureIndex
+    );
+    setLocalContent((prev) => ({ ...prev, pricing: newPricing }));
+  };
+
+  const updatePricingFeature = (
+    tierIndex: number,
+    featureIndex: number,
+    value: string
+  ) => {
+    const newPricing = [...localContent.pricing];
+    newPricing[tierIndex].features[featureIndex] = value;
+    setLocalContent((prev) => ({ ...prev, pricing: newPricing }));
+  };
+
   // --- Product Management ---
   const addProduct = () => {
     const newProduct: ProductItem = {
@@ -1611,24 +1636,36 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
-                          Features
-                        </label>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs font-bold text-gray-400 uppercase">
+                            Features
+                          </label>
+                          <button
+                            onClick={() => addPricingFeature(idx)}
+                            className="text-xs bg-[#498FB3] hover:bg-[#3d7a9a] text-white px-2 py-1 rounded flex items-center gap-1"
+                          >
+                            <Plus className="w-3 h-3" />
+                            Add
+                          </button>
+                        </div>
                         <div className="space-y-2">
                           {tier.features.map((feature, fIdx) => (
-                            <div key={fIdx} className="flex gap-2">
+                            <div key={fIdx} className="flex gap-2 items-center group">
                               <div className="w-1.5 h-1.5 bg-[#ADE8F4] rounded-full mt-2 shrink-0"></div>
                               <input
                                 type="text"
                                 value={feature}
-                                onChange={(e) => {
-                                  const newPricing = [...localContent.pricing];
-                                  newPricing[idx].features[fIdx] =
-                                    e.target.value;
-                                  updateField(["pricing"], newPricing);
-                                }}
+                                onChange={(e) =>
+                                  updatePricingFeature(idx, fIdx, e.target.value)
+                                }
                                 className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
                               />
+                              <button
+                                onClick={() => removePricingFeature(idx, fIdx)}
+                                className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 p-1"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
                             </div>
                           ))}
                         </div>
