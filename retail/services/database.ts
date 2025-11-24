@@ -89,21 +89,6 @@ export const authenticateAdmin = async (
 ): Promise<{ success: boolean; token?: string }> => {
   console.log("🚀 authenticateAdmin called with username:", username);
   try {
-    // TODO: Implement authentication endpoint in centralized API
-    // For now, use a simple check (replace with real API call)
-    console.log("⚠️  Using local authentication (temporary)");
-
-    // Temporary: Simple check for admin/admin
-    if (username === "admin" && password === "admin") {
-      const tempToken = btoa(`${username}:${Date.now()}`);
-      console.log("✅ Authentication successful (temporary)");
-      return { success: true, token: tempToken };
-    }
-
-    console.log("❌ Authentication failed");
-    return { success: false };
-
-    /* Future implementation with centralized API:
     const url = `${API_BASE}${RETAIL_API_PATH}/auth`;
     console.log("📡 Making POST request to:", url);
     const response = await fetch(url, {
@@ -125,16 +110,17 @@ export const authenticateAdmin = async (
     const data = await response.json();
     console.log(
       "✅ Authentication successful, token received:",
-      data.token ? "yes" : "no"
+      data.data?.token ? "yes" : "no"
     );
 
-    if (data.token) {
-      localStorage.setItem("admin_token", data.token);
+    if (data.success && data.data?.token) {
+      localStorage.setItem("admin_token", data.data.token);
       console.log("💾 Token saved to localStorage");
+      return { success: true, token: data.data.token };
     }
 
-    return { success: true, token: data.token };
-    */
+    console.log("❌ Authentication failed, no token in response");
+    return { success: false };
   } catch (error) {
     console.error("💥 Error authenticating:", error);
     return { success: false };

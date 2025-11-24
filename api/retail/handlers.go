@@ -1,6 +1,8 @@
 package retail
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -10,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // APIResponse represents a standard API response
@@ -277,6 +280,67 @@ func (rh *RetailHandlers) SaveMetadata(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, APIResponse{
 		Success: true,
 		Data:    map[string]interface{}{"message": "Metadata saved successfully"},
+	})
+}
+
+// AuthRequest represents login credentials
+type AuthRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+// Authenticate handles admin login
+func (rh *RetailHandlers) Authenticate(w http.ResponseWriter, r *http.Request) {
+	if rh.DB == nil {
+		respondWithError(w, http.StatusServiceUnavailable, "Database not available")
+		return
+	}
+
+	var authReq AuthRequest
+	if err := json.NewDecoder(r.Body).Decode(&authReq); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	ctx := r.Context()
+	collection := rh.DB.Collection("admins")
+
+	var admin bson.M
+	err := collection.FindOne(ctx, bson.M{"username": authReq.Username}).Decode(&admin)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			respondWithError(w, http.StatusUnauthorized, "Invalid credentials")
+			return
+		}
+		respondWithError(w, http.StatusInternalServerError, "Failed to authenticate")
+		return
+	}
+
+	// Get password from database
+	hashedPassword, ok := admin["password"].(string)
+	if !ok {
+		respondWithError(w, http.StatusInternalServerError, "Invalid admin data")
+		return
+	}
+
+	// Compare password with bcrypt
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(authReq.Password))
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Invalid credentials")
+		return
+	}
+
+	// Generate a simple token (in production, use JWT)
+	tokenBytes := make([]byte, 32)
+	rand.Read(tokenBytes)
+	token := base64.URLEncoding.EncodeToString(tokenBytes)
+
+	respondWithJSON(w, http.StatusOK, APIResponse{
+		Success: true,
+		Data: map[string]interface{}{
+			"token":    token,
+			"username": authReq.Username,
+		},
 	})
 }
 

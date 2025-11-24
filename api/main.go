@@ -93,6 +93,7 @@ func (a *App) setupRoutes() {
 
 	// Retail API v1 routes
 	retailAPI := a.Router.PathPrefix("/retail/v1").Subrouter()
+	retailAPI.HandleFunc("/auth", retailHandlers.Authenticate).Methods("POST")
 	retailAPI.HandleFunc("/products", retailHandlers.GetProducts).Methods("GET")
 	retailAPI.HandleFunc("/products", retailHandlers.CreateProduct).Methods("POST")
 	retailAPI.HandleFunc("/products/{id}", retailHandlers.GetProduct).Methods("GET")
