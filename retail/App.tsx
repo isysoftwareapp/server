@@ -87,6 +87,14 @@ const App: React.FC = () => {
     null
   );
 
+  // Check for admin token on mount
+  React.useEffect(() => {
+    const token = localStorage.getItem("admin_token");
+    if (token) {
+      setIsAdmin(true);
+    }
+  }, []);
+
   const scrollToSection = (id: string) => {
     setMobileMenuOpen(false);
     const element = document.getElementById(id);
