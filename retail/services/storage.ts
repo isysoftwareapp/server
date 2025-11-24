@@ -42,12 +42,14 @@ export const uploadFile = async (file: File): Promise<string | null> => {
     const data = await response.json();
     console.log("✅ Upload successful:", data);
 
-    // Return the full URL
-    const baseUrl = import.meta.env.DEV
-      ? "http://localhost:3001"
-      : window.location.origin;
+    // Return the URL from API response (already includes /uploads/ path)
+    if (data.success && data.data && data.data.url) {
+      // Return full URL using API base
+      return `${API_BASE}${data.data.url}`;
+    }
 
-    return `${baseUrl}${data.url}`;
+    console.error("❌ Invalid response format:", data);
+    return null;
   } catch (error) {
     console.error("💥 Error uploading file:", error);
     return null;
