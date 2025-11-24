@@ -252,6 +252,48 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setLocalContent((prev) => ({ ...prev, pricing: newPricing }));
   };
 
+  // --- Hardware Management ---
+  const addHardwareItem = () => {
+    const newItem: HardwareItem = {
+      title: "New Hardware",
+      description: "Description of the new hardware item.",
+      icon: "Monitor",
+    };
+    setLocalContent((prev) => ({
+      ...prev,
+      hardware: {
+        ...prev.hardware,
+        items: [...prev.hardware.items, newItem],
+      },
+    }));
+  };
+
+  const removeHardwareItem = (index: number) => {
+    setLocalContent((prev) => ({
+      ...prev,
+      hardware: {
+        ...prev.hardware,
+        items: prev.hardware.items.filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const updateHardwareItem = (
+    index: number,
+    field: keyof HardwareItem,
+    value: string
+  ) => {
+    const newItems = [...localContent.hardware.items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    setLocalContent((prev) => ({
+      ...prev,
+      hardware: {
+        ...prev.hardware,
+        items: newItems,
+      },
+    }));
+  };
+
   // --- Product Management ---
   const addProduct = () => {
     const newProduct: ProductItem = {
@@ -1696,6 +1738,127 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* HARDWARE TAB */}
+          {activeTab === "hardware" && (
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 max-w-3xl">
+              <h2 className="text-xl font-bold mb-6 pb-4 border-b border-gray-100 text-black">
+                Hardware Section
+              </h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Section Title
+                  </label>
+                  <input
+                    type="text"
+                    value={localContent.hardware.title}
+                    onChange={(e) =>
+                      updateField(["hardware", "title"], e.target.value)
+                    }
+                    className="w-full p-3 bg-white text-black border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ADE8F4]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">
+                    Subtitle
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={localContent.hardware.subtitle}
+                    onChange={(e) =>
+                      updateField(["hardware", "subtitle"], e.target.value)
+                    }
+                    className="w-full p-3 bg-white text-black border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#ADE8F4]"
+                  />
+                </div>
+                <div className="border-t border-gray-100 pt-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-bold text-gray-900">Hardware Items</h3>
+                    <button
+                      onClick={addHardwareItem}
+                      className="bg-[#498FB3] hover:bg-[#3d7a9a] text-white px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Add Item
+                    </button>
+                  </div>
+                  <div className="space-y-6">
+                    {localContent.hardware.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gray-50 p-4 rounded-xl border border-gray-200 relative group"
+                      >
+                        <button
+                          onClick={() => removeHardwareItem(idx)}
+                          className="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
+                              Title
+                            </label>
+                            <input
+                              type="text"
+                              value={item.title}
+                              onChange={(e) =>
+                                updateHardwareItem(idx, "title", e.target.value)
+                              }
+                              className="w-full p-2 bg-white text-black border border-gray-200 rounded-lg focus:outline-none focus:border-[#498FB3]"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
+                              Icon
+                            </label>
+                            <select
+                              value={item.icon}
+                              onChange={(e) =>
+                                updateHardwareItem(idx, "icon", e.target.value)
+                              }
+                              className="w-full p-2 bg-white text-black border border-gray-200 rounded-lg focus:outline-none focus:border-[#498FB3]"
+                            >
+                              <option value="Monitor">Monitor</option>
+                              <option value="Settings">Settings</option>
+                              <option value="CreditCard">CreditCard</option>
+                              <option value="Box">Box</option>
+                              <option value="Users">Users</option>
+                              <option value="Smartphone">Smartphone</option>
+                              <option value="QrCode">QrCode</option>
+                              <option value="Printer">Printer</option>
+                              <option value="LayoutGrid">LayoutGrid</option>
+                              <option value="Zap">Zap</option>
+                              <option value="Globe">Globe</option>
+                              <option value="Shield">Shield</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div className="mt-3">
+                          <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
+                            Description
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={item.description}
+                            onChange={(e) =>
+                              updateHardwareItem(
+                                idx,
+                                "description",
+                                e.target.value
+                              )
+                            }
+                            className="w-full p-2 bg-white text-black border border-gray-200 rounded-lg focus:outline-none focus:border-[#498FB3] text-sm"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           )}
