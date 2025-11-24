@@ -221,9 +221,13 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <h1 className="text-4xl lg:text-5xl font-black text-gray-900 leading-tight">
                     {product.name}
                   </h1>
-                  <p className="text-lg text-gray-600 leading-relaxed">
-                    {product.description}
-                  </p>
+                  <div className="text-lg text-gray-600 leading-relaxed space-y-4">
+                    {product.description.split('\n').map((line, index) => (
+                      <p key={index} className={index === 0 ? '' : 'mt-4'}>
+                        {line.trim()}
+                      </p>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Pricing Cards */}
