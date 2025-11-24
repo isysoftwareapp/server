@@ -29,6 +29,7 @@ import {
   Upload,
   ShoppingBag,
   Tag,
+  GripVertical,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -299,6 +300,41 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       (_, i) => i !== imageIndex
     );
     setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const reorderProductImages = (
+    productIndex: number,
+    fromIndex: number,
+    toIndex: number
+  ) => {
+    const newItems = [...localContent.products];
+    const images = [...newItems[productIndex].images];
+    const [removed] = images.splice(fromIndex, 1);
+    images.splice(toIndex, 0, removed);
+    newItems[productIndex].images = images;
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const handleImageDragStart = (e: React.DragEvent, imageIndex: number) => {
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/html", imageIndex.toString());
+  };
+
+  const handleImageDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleImageDrop = (
+    e: React.DragEvent,
+    productIndex: number,
+    dropIndex: number
+  ) => {
+    e.preventDefault();
+    const dragIndex = parseInt(e.dataTransfer.getData("text/html"));
+    if (dragIndex !== dropIndex) {
+      reorderProductImages(productIndex, dragIndex, dropIndex);
+    }
   };
 
   // --- Product Variants Management ---
@@ -1195,6 +1231,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       <div className="flex justify-between items-center mb-3">
                         <label className="block text-sm font-bold text-gray-700">
                           Product Images
+                          <span className="text-xs text-gray-400 font-normal ml-2">
+                            (Drag to reorder)
+                          </span>
                         </label>
                         <label className="cursor-pointer bg-[#ADE8F4] hover:bg-[#9ADFF0] text-black px-3 py-1.5 rounded-lg font-bold text-xs transition-colors flex items-center gap-2">
                           <Upload className="w-3 h-3" /> Add Image
@@ -1223,29 +1262,33 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                           <div className="absolute top-2 left-2 bg-[#498FB3] text-white text-[10px] font-bold px-2 py-0.5 rounded">
                             MAIN
                           </div>
-                          <input
-                            type="text"
-                            value={product.image}
-                            onChange={(e) =>
-                              updateProduct(idx, "image", e.target.value)
-                            }
-                            className="w-full mt-1 p-1 text-[10px] bg-white text-black rounded border border-gray-200 focus:border-[#498FB3] focus:outline-none"
-                            placeholder="URL"
-                          />
                         </div>
-                        {/* Additional images */}
+                        {/* Additional images - Draggable */}
                         {product.images?.map((img, imgIdx) => (
-                          <div key={imgIdx} className="relative group">
-                            <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
+                          <div
+                            key={imgIdx}
+                            draggable
+                            onDragStart={(e) => handleImageDragStart(e, imgIdx)}
+                            onDragOver={handleImageDragOver}
+                            onDrop={(e) => handleImageDrop(e, idx, imgIdx)}
+                            className="relative group cursor-move"
+                          >
+                            <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-200 hover:border-[#498FB3] transition-colors">
                               <img
                                 src={img}
                                 alt={`${product.name} ${imgIdx + 2}`}
                                 className="w-full h-full object-cover"
                               />
                             </div>
+                            <div className="absolute top-2 left-2 bg-black/70 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <GripVertical className="w-3 h-3" />
+                            </div>
+                            <div className="absolute top-2 right-2 bg-white/90 text-black text-[10px] font-bold px-2 py-0.5 rounded">
+                              #{imgIdx + 2}
+                            </div>
                             <button
                               onClick={() => removeProductImage(idx, imgIdx)}
-                              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute bottom-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <Trash2 className="w-3 h-3" />
                             </button>
