@@ -222,8 +222,8 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     {product.name}
                   </h1>
                   <div className="text-lg text-gray-600 leading-relaxed space-y-4">
-                    {product.description.split('\n').map((line, index) => (
-                      <p key={index} className={index === 0 ? '' : 'mt-4'}>
+                    {product.description.split("\n").map((line, index) => (
+                      <p key={index} className={index === 0 ? "" : "mt-4"}>
                         {line.trim()}
                       </p>
                     ))}

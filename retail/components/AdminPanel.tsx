@@ -326,14 +326,17 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
   const removeProductImage = (productIndex: number, imageIndex: number) => {
     const newItems = [...localContent.products];
-    const allImages = [newItems[productIndex].image, ...(newItems[productIndex].images || [])];
+    const allImages = [
+      newItems[productIndex].image,
+      ...(newItems[productIndex].images || []),
+    ];
 
     // Remove the image at the specified index
     allImages.splice(imageIndex, 1);
 
     // If we removed the main image, make the next image the main one
     if (imageIndex === 0) {
-      newItems[productIndex].image = allImages[0] || '';
+      newItems[productIndex].image = allImages[0] || "";
       newItems[productIndex].images = allImages.slice(1);
     } else {
       // Remove from additional images array
@@ -349,7 +352,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     toIndex: number
   ) => {
     const newItems = [...localContent.products];
-    const allImages = [newItems[productIndex].image, ...(newItems[productIndex].images || [])];
+    const allImages = [
+      newItems[productIndex].image,
+      ...(newItems[productIndex].images || []),
+    ];
 
     // Reorder the combined array
     const [removed] = allImages.splice(fromIndex, 1);
@@ -1298,51 +1304,62 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       </div>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {/* All images - including main image as draggable */}
-                        {[product.image, ...(product.images || [])].map((img, imgIdx) => (
-                          <div
-                            key={imgIdx}
-                            draggable
-                            onDragStart={(e) => handleImageDragStart(e, imgIdx)}
-                            onDragOver={handleImageDragOver}
-                            onDrop={(e) => handleImageDrop(e, idx, imgIdx)}
-                            className="relative group cursor-move"
-                          >
-                            <div className={`aspect-square bg-gray-50 rounded-lg overflow-hidden border-2 transition-colors ${
-                              imgIdx === 0
-                                ? "border-[#498FB3]"
-                                : "border-gray-200 hover:border-[#498FB3]"
-                            }`}>
-                              <img
-                                src={img}
-                                alt={`${product.name} ${imgIdx + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                            {/* Main badge for first image */}
-                            {imgIdx === 0 && (
-                              <div className="absolute top-2 left-2 bg-[#498FB3] text-white text-[10px] font-bold px-2 py-0.5 rounded">
-                                MAIN
+                        {[product.image, ...(product.images || [])].map(
+                          (img, imgIdx) => {
+                            if (!img || !img.trim()) return null;
+                            return (
+                              <div
+                                key={imgIdx}
+                                draggable
+                                onDragStart={(e) =>
+                                  handleImageDragStart(e, imgIdx)
+                                }
+                                onDragOver={handleImageDragOver}
+                                onDrop={(e) => handleImageDrop(e, idx, imgIdx)}
+                                className="relative group cursor-move"
+                              >
+                                <div
+                                  className={`aspect-square bg-gray-50 rounded-lg overflow-hidden border-2 transition-colors ${
+                                    imgIdx === 0
+                                      ? "border-[#498FB3]"
+                                      : "border-gray-200 hover:border-[#498FB3]"
+                                  }`}
+                                >
+                                  <img
+                                    src={img}
+                                    alt={`${product.name} ${imgIdx + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                {/* Main badge for first image */}
+                                {imgIdx === 0 && (
+                                  <div className="absolute top-2 left-2 bg-[#498FB3] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                                    MAIN
+                                  </div>
+                                )}
+                                {/* Drag handle for all images */}
+                                <div className="absolute top-2 left-2 bg-black/70 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <GripVertical className="w-3 h-3" />
+                                </div>
+                                {/* Image number for non-main images */}
+                                {imgIdx > 0 && (
+                                  <div className="absolute top-2 right-2 bg-white/90 text-black text-[10px] font-bold px-2 py-0.5 rounded">
+                                    #{imgIdx}
+                                  </div>
+                                )}
+                                {/* Delete button for all images */}
+                                <button
+                                  onClick={() =>
+                                    removeProductImage(idx, imgIdx)
+                                  }
+                                  className="absolute bottom-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
                               </div>
-                            )}
-                            {/* Drag handle for all images */}
-                            <div className="absolute top-2 left-2 bg-black/70 text-white rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <GripVertical className="w-3 h-3" />
-                            </div>
-                            {/* Image number for non-main images */}
-                            {imgIdx > 0 && (
-                              <div className="absolute top-2 right-2 bg-white/90 text-black text-[10px] font-bold px-2 py-0.5 rounded">
-                                #{imgIdx + 1}
-                              </div>
-                            )}
-                            {/* Delete button for all images */}
-                            <button
-                              onClick={() => removeProductImage(idx, imgIdx)}
-                              className="absolute bottom-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </button>
-                          </div>
-                        ))}
+                            );
+                          }
+                        )}
                       </div>
                     </div>
 
@@ -1650,13 +1667,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         </div>
                         <div className="space-y-2">
                           {tier.features.map((feature, fIdx) => (
-                            <div key={fIdx} className="flex gap-2 items-center group">
+                            <div
+                              key={fIdx}
+                              className="flex gap-2 items-center group"
+                            >
                               <div className="w-1.5 h-1.5 bg-[#ADE8F4] rounded-full mt-2 shrink-0"></div>
                               <input
                                 type="text"
                                 value={feature}
                                 onChange={(e) =>
-                                  updatePricingFeature(idx, fIdx, e.target.value)
+                                  updatePricingFeature(
+                                    idx,
+                                    fIdx,
+                                    e.target.value
+                                  )
                                 }
                                 className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
                               />
