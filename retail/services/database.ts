@@ -5,7 +5,9 @@
 
 import { SiteContent } from "../types";
 
-const API_BASE = "/retail/api";
+const API_BASE = import.meta.env.DEV
+  ? "https://isy.software/retail/api"
+  : "/retail/api";
 
 export const fetchSiteContent = async (): Promise<SiteContent | null> => {
   console.log("🚀 fetchSiteContent called");

@@ -287,6 +287,10 @@ function getDefaultContent() {
           "Professional-grade self-service kiosk with advanced features.",
         image:
           "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2000&auto=format&fit=crop",
+        images: [
+          "https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=2000&auto=format&fit=crop",
+          "https://images.unsplash.com/photo-1556740749-887f6717d7e4?q=80&w=2000&auto=format&fit=crop",
+        ],
         specs: [
           "24-inch touchscreen display",
           "Built-in printer and scanner",
@@ -295,6 +299,56 @@ function getDefaultContent() {
         ],
         pricePurchase: "89000",
         priceRent: "3500",
+        variants: [
+          {
+            id: "v-1",
+            name: "Screen Size",
+            options: [
+              {
+                id: "o-1",
+                name: '21.5" Display',
+                priceBuy: "89000",
+                priceRent: "3500",
+              },
+              {
+                id: "o-2",
+                name: '24" Display',
+                priceBuy: "95000",
+                priceRent: "3800",
+              },
+              {
+                id: "o-3",
+                name: '27" Display',
+                priceBuy: "105000",
+                priceRent: "4200",
+              },
+            ],
+          },
+          {
+            id: "v-2",
+            name: "Payment Module",
+            options: [
+              {
+                id: "o-4",
+                name: "Cash Only",
+                priceBuy: "0",
+                priceRent: "0",
+              },
+              {
+                id: "o-5",
+                name: "Card Reader",
+                priceBuy: "15000",
+                priceRent: "600",
+              },
+              {
+                id: "o-6",
+                name: "Full Payment Suite",
+                priceBuy: "25000",
+                priceRent: "1000",
+              },
+            ],
+          },
+        ],
       },
     ],
     pricing: [

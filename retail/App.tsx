@@ -25,13 +25,16 @@ import {
   Shield,
   ShoppingBag,
   Check,
+  DollarSign,
+  Image as ImageIcon,
 } from "lucide-react";
 import FluidBackground from "./components/FluidBackground";
 import AIChat from "./components/AIChat";
 import CustomCursor from "./components/CustomCursor";
 import AdminPanel from "./components/AdminPanel";
+import ProductDetailModal from "./components/ProductDetailModal";
 import { useSiteContent } from "./hooks/useSiteContent";
-import { FeatureBlock, EcosystemItem } from "./types";
+import { FeatureBlock, EcosystemItem, ProductItem } from "./types";
 
 // Icon Mapper
 const IconMap: Record<string, any> = {
@@ -67,6 +70,11 @@ const App: React.FC = () => {
   // Product Catalog Filters
   const [productFilter, setProductFilter] = useState<"all" | "kiosk" | "pos">(
     "kiosk"
+  );
+
+  // Product Detail Modal
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(
+    null
   );
 
   const scrollToSection = (id: string) => {
@@ -140,6 +148,16 @@ const App: React.FC = () => {
 
       <CustomCursor />
       <AIChat />
+
+      {/* Product Detail Modal */}
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductDetailModal
+            product={selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Login Modal */}
       <AnimatePresence>
@@ -221,16 +239,14 @@ const App: React.FC = () => {
           className="flex items-center gap-3 cursor-pointer group"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform overflow-hidden">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform overflow-hidden border border-gray-200">
             {content.images.logo ? (
               <img
                 src={content.images.logo}
                 alt="Logo"
                 className="w-full h-full object-contain"
               />
-            ) : (
-              <span className="text-white font-bold text-xl">is</span>
-            )}
+            ) : null}
           </div>
           <span className="text-2xl font-bold tracking-tight group-hover:opacity-80 transition-opacity">
             isy.software
@@ -361,13 +377,15 @@ const App: React.FC = () => {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#ADE8F4] flex items-center justify-center">
-                    <Users className="w-5 h-5 text-[#000]" />
+                    <span className="text-black font-bold text-2xl leading-none">
+                      ฿
+                    </span>
                   </div>
                   <div>
                     <div className="text-xs text-gray-400 font-bold uppercase">
-                      New Members
+                      Daily Income
                     </div>
-                    <div className="text-xl font-bold text-black">+128</div>
+                    <div className="text-xl font-bold text-black">+฿20.000</div>
                   </div>
                 </div>
               </motion.div>
@@ -745,9 +763,10 @@ const App: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-shadow duration-300 flex flex-col"
+                  onClick={() => setSelectedProduct(product)}
+                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col cursor-pointer group"
                 >
-                  <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden group">
+                  <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.name}
@@ -756,10 +775,16 @@ const App: React.FC = () => {
                     <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                       {product.category}
                     </div>
+                    {product.images && product.images.length > 0 && (
+                      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                        <ImageIcon className="w-3 h-3" />
+                        {product.images.length + 1}
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-6 flex-1 flex flex-col">
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">
+                    <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-[#498FB3] transition-colors">
                       {product.name}
                     </h3>
                     <p className="text-sm text-gray-500 mb-4 line-clamp-2">
@@ -797,6 +822,16 @@ const App: React.FC = () => {
                         </div>
                       </div>
                     </div>
+
+                    {product.variants && product.variants.length > 0 && (
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className="text-xs text-gray-500 font-bold flex items-center gap-2">
+                          <Settings className="w-3 h-3" />
+                          {product.variants.length} variant
+                          {product.variants.length > 1 ? "s" : ""} available
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -916,16 +951,14 @@ const App: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
             <div className="lg:col-span-2">
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center overflow-hidden">
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center overflow-hidden shadow-md border border-gray-200">
                   {content.images.logo ? (
                     <img
                       src={content.images.logo}
                       alt="Logo"
                       className="w-full h-full object-contain"
                     />
-                  ) : (
-                    <span className="text-white font-bold text-lg">is</span>
-                  )}
+                  ) : null}
                 </div>
                 <span className="text-2xl font-bold tracking-tight">
                   isy.software

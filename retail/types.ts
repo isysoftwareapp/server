@@ -1,8 +1,7 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 export interface Feature {
   id: string;
@@ -53,8 +52,12 @@ export interface FeatureBlock {
   description: string;
   bullets: string[];
   image: string;
-  layout: 'left' | 'right';
-  visualType: 'image' | 'custom_kiosk_ui' | 'custom_joint_ui' | 'custom_admin_ui'; // To preserve special visuals
+  layout: "left" | "right";
+  visualType:
+    | "image"
+    | "custom_kiosk_ui"
+    | "custom_joint_ui"
+    | "custom_admin_ui"; // To preserve special visuals
 }
 
 export interface HardwareItem {
@@ -69,15 +72,30 @@ export interface HardwareSection {
   items: HardwareItem[];
 }
 
+export interface ProductOption {
+  id: string;
+  name: string;
+  priceBuy: string;
+  priceRent: string;
+}
+
+export interface ProductVariant {
+  id: string;
+  name: string;
+  options: ProductOption[];
+}
+
 export interface ProductItem {
   id: string;
-  category: 'kiosk' | 'pos';
+  category: "kiosk" | "pos";
   name: string;
   description: string;
-  image: string;
+  image: string; // Primary/thumbnail image
+  images: string[]; // Multiple images for slider
   specs: string[];
   pricePurchase: string;
   priceRent: string;
+  variants: ProductVariant[];
 }
 
 export interface SiteContent {
@@ -92,18 +110,18 @@ export interface SiteContent {
 }
 
 export interface ChatMessage {
-  role: 'user' | 'model';
+  role: "user" | "model";
   text: string;
   isError?: boolean;
 }
 
 export enum Section {
-  HOME = 'home',
-  ECOSYSTEM = 'ecosystem',
-  FEATURES = 'features',
-  HARDWARE = 'hardware',
-  PRICING = 'pricing',
-  CONTACT = 'contact',
+  HOME = "home",
+  ECOSYSTEM = "ecosystem",
+  FEATURES = "features",
+  HARDWARE = "hardware",
+  PRICING = "pricing",
+  CONTACT = "contact",
 }
 
 export interface Artist {

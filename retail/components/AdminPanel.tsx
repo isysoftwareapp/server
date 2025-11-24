@@ -230,9 +230,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
       description: "Product description here.",
       image:
         "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2000&auto=format&fit=crop",
+      images: [],
       specs: ["Spec 1", "Spec 2"],
       pricePurchase: "0",
       priceRent: "0",
+      variants: [],
     };
     setLocalContent((prev) => ({
       ...prev,
@@ -281,13 +283,106 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     setLocalContent((prev) => ({ ...prev, products: newItems }));
   };
 
+  // --- Product Images Management ---
+  const addProductImage = (productIndex: number, imageUrl: string) => {
+    const newItems = [...localContent.products];
+    if (!newItems[productIndex].images) {
+      newItems[productIndex].images = [];
+    }
+    newItems[productIndex].images.push(imageUrl);
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const removeProductImage = (productIndex: number, imageIndex: number) => {
+    const newItems = [...localContent.products];
+    newItems[productIndex].images = newItems[productIndex].images.filter(
+      (_, i) => i !== imageIndex
+    );
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  // --- Product Variants Management ---
+  const addProductVariant = (productIndex: number) => {
+    const newItems = [...localContent.products];
+    if (!newItems[productIndex].variants) {
+      newItems[productIndex].variants = [];
+    }
+    newItems[productIndex].variants.push({
+      id: `v-${Date.now()}`,
+      name: "New Variant",
+      options: [],
+    });
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const removeProductVariant = (productIndex: number, variantIndex: number) => {
+    const newItems = [...localContent.products];
+    newItems[productIndex].variants = newItems[productIndex].variants.filter(
+      (_, i) => i !== variantIndex
+    );
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const updateProductVariantName = (
+    productIndex: number,
+    variantIndex: number,
+    name: string
+  ) => {
+    const newItems = [...localContent.products];
+    newItems[productIndex].variants[variantIndex].name = name;
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  // --- Product Options Management ---
+  const addProductOption = (productIndex: number, variantIndex: number) => {
+    const newItems = [...localContent.products];
+    newItems[productIndex].variants[variantIndex].options.push({
+      id: `o-${Date.now()}`,
+      name: "New Option",
+      priceBuy: "0",
+      priceRent: "0",
+    });
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const removeProductOption = (
+    productIndex: number,
+    variantIndex: number,
+    optionIndex: number
+  ) => {
+    const newItems = [...localContent.products];
+    newItems[productIndex].variants[variantIndex].options = newItems[
+      productIndex
+    ].variants[variantIndex].options.filter((_, i) => i !== optionIndex);
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
+  const updateProductOption = (
+    productIndex: number,
+    variantIndex: number,
+    optionIndex: number,
+    field: "name" | "priceBuy" | "priceRent",
+    value: string
+  ) => {
+    const newItems = [...localContent.products];
+    newItems[productIndex].variants[variantIndex].options[optionIndex][field] =
+      value;
+    setLocalContent((prev) => ({ ...prev, products: newItems }));
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 font-brand flex text-slate-800">
       {/* Sidebar */}
       <div className="w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full z-10 overflow-y-auto custom-scrollbar">
         <div className="p-6 border-b border-gray-100 flex items-center gap-3">
-          <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center text-white font-bold">
-            is
+          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center overflow-hidden">
+            {localContent.images.logo ? (
+              <img
+                src={localContent.images.logo}
+                alt="Logo"
+                className="w-full h-full object-contain"
+              />
+            ) : null}
           </div>
           <span className="font-bold text-lg text-black">Admin CMS</span>
         </div>
@@ -1038,7 +1133,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 {localContent.products.map((product, idx) => (
                   <div
                     key={product.id}
-                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 relative flex flex-col md:flex-row gap-6"
+                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 relative"
                   >
                     <button
                       onClick={() => removeProduct(idx)}
@@ -1048,45 +1143,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       <Trash2 className="w-5 h-5" />
                     </button>
 
-                    {/* Image Side */}
-                    <div className="w-full md:w-1/3 space-y-4">
-                      <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden border border-gray-200 relative">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={product.image}
-                          onChange={(e) =>
-                            updateProduct(idx, "image", e.target.value)
-                          }
-                          className="flex-1 p-2 bg-white text-black rounded-lg border border-gray-200 text-xs focus:border-[#498FB3] focus:outline-none"
-                          placeholder="Image URL"
-                        />
-                        <label className="cursor-pointer bg-black hover:bg-gray-800 text-white px-3 py-2 rounded-lg font-bold transition-colors flex items-center gap-2 shrink-0">
-                          <Upload className="w-3 h-3" />
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) =>
-                              handleFileUpload(e, (url) =>
-                                updateProduct(idx, "image", url)
-                              )
-                            }
-                          />
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Data Side */}
-                    <div className="flex-1 space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
+                    {/* Basic Info */}
+                    <div className="mb-6 pb-6 border-b border-gray-200">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="md:col-span-2">
                           <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
                             Product Name
                           </label>
@@ -1115,8 +1175,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                           </select>
                         </div>
                       </div>
-
-                      <div>
+                      <div className="mt-4">
                         <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
                           Description
                         </label>
@@ -1129,7 +1188,77 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                           className="w-full p-2 text-sm bg-white text-black rounded-lg border border-gray-200 focus:border-[#498FB3] focus:outline-none"
                         />
                       </div>
+                    </div>
 
+                    {/* Images Section */}
+                    <div className="mb-6 pb-6 border-b border-gray-200">
+                      <div className="flex justify-between items-center mb-3">
+                        <label className="block text-sm font-bold text-gray-700">
+                          Product Images
+                        </label>
+                        <label className="cursor-pointer bg-[#ADE8F4] hover:bg-[#9ADFF0] text-black px-3 py-1.5 rounded-lg font-bold text-xs transition-colors flex items-center gap-2">
+                          <Upload className="w-3 h-3" /> Add Image
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) =>
+                              handleFileUpload(e, (url) =>
+                                addProductImage(idx, url)
+                              )
+                            }
+                          />
+                        </label>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {/* Main thumbnail */}
+                        <div className="relative group">
+                          <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden border-2 border-[#498FB3]">
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="absolute top-2 left-2 bg-[#498FB3] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                            MAIN
+                          </div>
+                          <input
+                            type="text"
+                            value={product.image}
+                            onChange={(e) =>
+                              updateProduct(idx, "image", e.target.value)
+                            }
+                            className="w-full mt-1 p-1 text-[10px] bg-white text-black rounded border border-gray-200 focus:border-[#498FB3] focus:outline-none"
+                            placeholder="URL"
+                          />
+                        </div>
+                        {/* Additional images */}
+                        {product.images?.map((img, imgIdx) => (
+                          <div key={imgIdx} className="relative group">
+                            <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden border border-gray-200">
+                              <img
+                                src={img}
+                                alt={`${product.name} ${imgIdx + 2}`}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <button
+                              onClick={() => removeProductImage(idx, imgIdx)}
+                              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Base Pricing */}
+                    <div className="mb-6 pb-6 border-b border-gray-200">
+                      <label className="block text-sm font-bold text-gray-700 mb-3">
+                        Base Pricing
+                      </label>
                       <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
@@ -1162,38 +1291,168 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                           />
                         </div>
                       </div>
+                    </div>
 
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
-                          Tech Specs
+                    {/* Variants Section */}
+                    <div className="mb-6 pb-6 border-b border-gray-200">
+                      <div className="flex justify-between items-center mb-3">
+                        <label className="block text-sm font-bold text-gray-700">
+                          Product Variants & Options
                         </label>
-                        <div className="space-y-2">
-                          {product.specs.map((spec, sIdx) => (
-                            <div key={sIdx} className="flex gap-2 items-center">
-                              <Tag className="w-4 h-4 text-gray-400" />
-                              <input
-                                type="text"
-                                value={spec}
-                                onChange={(e) =>
-                                  updateProductSpec(idx, sIdx, e.target.value)
-                                }
-                                className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
-                              />
-                              <button
-                                onClick={() => removeProductSpec(idx, sIdx)}
-                                className="text-gray-300 hover:text-red-500"
+                        <button
+                          onClick={() => addProductVariant(idx)}
+                          className="bg-black hover:bg-gray-800 text-white px-3 py-1.5 rounded-lg font-bold text-xs transition-colors flex items-center gap-2"
+                        >
+                          <Plus className="w-3 h-3" /> Add Variant
+                        </button>
+                      </div>
+                      {product.variants?.map((variant, vIdx) => (
+                        <div
+                          key={variant.id}
+                          className="bg-gray-50 p-4 rounded-xl mb-4 border border-gray-200"
+                        >
+                          <div className="flex justify-between items-center mb-3">
+                            <input
+                              type="text"
+                              value={variant.name}
+                              onChange={(e) =>
+                                updateProductVariantName(
+                                  idx,
+                                  vIdx,
+                                  e.target.value
+                                )
+                              }
+                              className="flex-1 p-2 font-bold bg-white text-black rounded-lg border border-gray-200 focus:border-[#498FB3] focus:outline-none mr-3"
+                              placeholder="Variant Name (e.g., Screen Size)"
+                            />
+                            <button
+                              onClick={() => removeProductVariant(idx, vIdx)}
+                              className="text-red-500 hover:bg-red-50 p-2 rounded-lg"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                          <div className="space-y-2">
+                            {variant.options.map((option, oIdx) => (
+                              <div
+                                key={option.id}
+                                className="bg-white p-3 rounded-lg border border-gray-200 grid grid-cols-1 md:grid-cols-12 gap-3 items-center"
                               >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => addProductSpec(idx)}
-                            className="text-xs font-bold text-[#498FB3] mt-2 flex items-center gap-1"
-                          >
-                            <Plus className="w-3 h-3" /> Add Spec
-                          </button>
+                                <div className="md:col-span-5">
+                                  <input
+                                    type="text"
+                                    value={option.name}
+                                    onChange={(e) =>
+                                      updateProductOption(
+                                        idx,
+                                        vIdx,
+                                        oIdx,
+                                        "name",
+                                        e.target.value
+                                      )
+                                    }
+                                    className="w-full p-2 text-sm bg-white text-black border border-gray-200 rounded focus:border-[#498FB3] focus:outline-none"
+                                    placeholder="Option Name"
+                                  />
+                                </div>
+                                <div className="md:col-span-3">
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-xs text-gray-400 font-bold">
+                                      Buy:
+                                    </span>
+                                    <input
+                                      type="text"
+                                      value={option.priceBuy}
+                                      onChange={(e) =>
+                                        updateProductOption(
+                                          idx,
+                                          vIdx,
+                                          oIdx,
+                                          "priceBuy",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="flex-1 p-2 text-sm bg-white text-black border border-gray-200 rounded focus:border-[#498FB3] focus:outline-none"
+                                      placeholder="฿"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="md:col-span-3">
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-xs text-[#498FB3] font-bold">
+                                      Rent:
+                                    </span>
+                                    <input
+                                      type="text"
+                                      value={option.priceRent}
+                                      onChange={(e) =>
+                                        updateProductOption(
+                                          idx,
+                                          vIdx,
+                                          oIdx,
+                                          "priceRent",
+                                          e.target.value
+                                        )
+                                      }
+                                      className="flex-1 p-2 text-sm bg-white text-black border border-gray-200 rounded focus:border-[#498FB3] focus:outline-none"
+                                      placeholder="฿"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="md:col-span-1 flex justify-end">
+                                  <button
+                                    onClick={() =>
+                                      removeProductOption(idx, vIdx, oIdx)
+                                    }
+                                    className="text-gray-300 hover:text-red-500"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => addProductOption(idx, vIdx)}
+                              className="text-xs font-bold text-[#498FB3] flex items-center gap-1 hover:underline"
+                            >
+                              <Plus className="w-3 h-3" /> Add Option
+                            </button>
+                          </div>
                         </div>
+                      ))}
+                    </div>
+
+                    {/* Specs */}
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-3">
+                        Technical Specifications
+                      </label>
+                      <div className="space-y-2">
+                        {product.specs.map((spec, sIdx) => (
+                          <div key={sIdx} className="flex gap-2 items-center">
+                            <Tag className="w-4 h-4 text-gray-400" />
+                            <input
+                              type="text"
+                              value={spec}
+                              onChange={(e) =>
+                                updateProductSpec(idx, sIdx, e.target.value)
+                              }
+                              className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
+                            />
+                            <button
+                              onClick={() => removeProductSpec(idx, sIdx)}
+                              className="text-gray-300 hover:text-red-500"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                        <button
+                          onClick={() => addProductSpec(idx)}
+                          className="text-xs font-bold text-[#498FB3] mt-2 flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" /> Add Spec
+                        </button>
                       </div>
                     </div>
                   </div>
