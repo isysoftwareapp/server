@@ -447,16 +447,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                   Site Logo
                 </h2>
                 <div className="flex items-center gap-8">
-                  <div className="w-24 h-24 bg-black rounded-xl flex items-center justify-center overflow-hidden border-2 border-gray-100 shrink-0">
+                  <div className="w-24 h-24 bg-white rounded-xl flex items-center justify-center overflow-hidden border-2 border-gray-100 shrink-0 shadow-md">
                     {localContent.images.logo ? (
                       <img
                         src={localContent.images.logo}
                         alt="Logo"
                         className="w-full h-full object-contain"
                       />
-                    ) : (
-                      <span className="text-white font-bold text-2xl">is</span>
-                    )}
+                    ) : null}
                   </div>
                   <div className="flex-1">
                     <label className="block text-sm font-bold text-gray-700 mb-2">
