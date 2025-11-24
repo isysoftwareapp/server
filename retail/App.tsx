@@ -104,14 +104,14 @@ const App: React.FC = () => {
     const newItem = {
       title: "New Hardware",
       description: "Description of the new hardware item.",
-      icon: "Monitor"
+      icon: "Monitor",
     };
     const updatedContent = {
       ...content,
       hardware: {
         ...content.hardware,
-        items: [...content.hardware.items, newItem]
-      }
+        items: [...content.hardware.items, newItem],
+      },
     };
     updateContent(updatedContent);
   };
@@ -122,8 +122,8 @@ const App: React.FC = () => {
       ...content,
       hardware: {
         ...content.hardware,
-        items: updatedItems
-      }
+        items: updatedItems,
+      },
     };
     updateContent(updatedContent);
   };
@@ -939,11 +939,11 @@ const App: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
             {content.pricing.map((tier, i) => (
               <div
                 key={i}
-                className={`relative p-10 rounded-[2rem] flex flex-col transition-all duration-300 ${
+                className={`relative p-10 rounded-[2rem] flex flex-col transition-all duration-300 h-full ${
                   tier.highlight
                     ? "bg-black text-white shadow-2xl shadow-black/20 scale-105 z-10 ring-1 ring-black"
                     : "bg-white text-black border border-gray-100 shadow-xl hover:shadow-2xl hover:-translate-y-2"
