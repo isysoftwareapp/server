@@ -284,7 +284,7 @@ const DEFAULT_CONTENT: SiteContent = {
         "Reports & analytics",
       ],
       image:
-        "http://103.94.239.157:8080/uploads/pricing-pos-management-system-54056dcd86b77d0e.png",
+        "https://api.isy.software/uploads/pricing-pos-management-system-54056dcd86b77d0e.png",
     },
     {
       name: "KIOSK System",
@@ -301,7 +301,7 @@ const DEFAULT_CONTENT: SiteContent = {
       ],
       highlight: true,
       image:
-        "http://103.94.239.157:8080/uploads/pricing-kiosk-system-f58d95503b625da8.png",
+        "https://api.isy.software/uploads/pricing-kiosk-system-f58d95503b625da8.png",
     },
     {
       name: "Full Package",
@@ -317,7 +317,7 @@ const DEFAULT_CONTENT: SiteContent = {
         "Real-time control",
       ],
       image:
-        "http://103.94.239.157:8080/uploads/pricing-full-package-(kiosk-+-pos)-75b0f04cf879e7ae.png",
+        "https://api.isy.software/uploads/pricing-full-package-(kiosk-+-pos)-75b0f04cf879e7ae.png",
     },
   ],
 };
