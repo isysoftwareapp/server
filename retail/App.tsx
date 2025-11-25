@@ -164,13 +164,18 @@ const App: React.FC = () => {
 
   if (!isLoaded) return null;
 
+  const handleLogout = () => {
+    localStorage.removeItem("admin_token");
+    setIsAdmin(false);
+  };
+
   if (isAdmin) {
     return (
       <AdminPanel
         content={content}
         onUpdate={updateContent}
         onReset={resetContent}
-        onLogout={() => setIsAdmin(false)}
+        onLogout={handleLogout}
       />
     );
   }
