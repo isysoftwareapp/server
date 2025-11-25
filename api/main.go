@@ -78,6 +78,9 @@ func (a *App) Initialize() {
 func (a *App) setupRoutes() {
 	// Health check
 	a.Router.HandleFunc("/health", a.healthCheck).Methods("GET")
+	
+	// Serve uploaded files
+	a.Router.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
 
 	// Initialize handlers
 	healthcareHandlers := healthcare.NewHealthcareHandlers(a.DB)
@@ -103,6 +106,7 @@ func (a *App) setupRoutes() {
 	retailAPI.HandleFunc("/products/{id}", retailHandlers.DeleteProduct).Methods("DELETE")
 	retailAPI.HandleFunc("/metadata", retailHandlers.GetMetadata).Methods("GET")
 	retailAPI.HandleFunc("/metadata", retailHandlers.SaveMetadata).Methods("POST")
+	retailAPI.HandleFunc("/migrate-base64", retailHandlers.MigrateBase64ToFiles).Methods("POST")
 
 	// Kiosk API v1 routes
 	kioskAPI := a.Router.PathPrefix("/kiosk/v1").Subrouter()

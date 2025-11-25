@@ -1,0 +1,22 @@
+.PHONY: help migrate build run
+
+help:
+	@echo "Available commands:"
+	@echo "  make migrate  - Run the base64 to file migration"
+	@echo "  make build    - Build the migration tool"
+	@echo "  make run      - Run the migration tool"
+
+migrate: build run
+
+build:
+	@echo "🔨 Building migration tool..."
+	cd cmd/migrate-base64 && go build -o ../../migrate-base64 .
+
+run:
+	@echo "🚀 Running migration..."
+	./migrate-base64
+
+clean:
+	@echo "🧹 Cleaning up..."
+	rm -f migrate-base64
+	rm -rf uploads

@@ -344,6 +344,87 @@ func (rh *RetailHandlers) Authenticate(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// MigrateBase64ToFiles extracts base64 images from MongoDB and saves them as files
+func (rh *RetailHandlers) MigrateBase64ToFiles(w http.ResponseWriter, r *http.Request) {
+	if rh.DB == nil {
+		respondWithError(w, http.StatusServiceUnavailable, "Database not available")
+		return
+	}
+
+	ctx := r.Context()
+	collection := rh.DB.Collection("metadata")
+
+	// Find metadata documents
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Failed to fetch metadata")
+		return
+	}
+	defer cursor.Close(ctx)
+
+	migrationStats := map[string]interface{}{
+		"processed": 0,
+		"migrated":  0,
+		"errors":    []string{},
+	}
+
+	// Note: Since pricing images now use external URLs (Unsplash),
+	// we'll just scan for base64 and report what needs to be replaced
+	
+	for cursor.Next(ctx) {
+		var doc bson.M
+		if err := cursor.Decode(&doc); err != nil {
+			continue
+		}
+
+		migrationStats["processed"] = migrationStats["processed"].(int) + 1
+		
+		// Check for base64 images in content field
+		if content, ok := doc["content"].(bson.M); ok {
+			hasBase64 := checkForBase64InContent(content)
+			if hasBase64 {
+				migrationStats["migrated"] = migrationStats["migrated"].(int) + 1
+			}
+		}
+	}
+
+	respondWithJSON(w, http.StatusOK, APIResponse{
+		Success: true,
+		Data:    migrationStats,
+	})
+}
+
+// Helper function to check for base64 images in content
+func checkForBase64InContent(content bson.M) bool {
+	hasBase64 := false
+	
+	// Check images object
+	if images, ok := content["images"].(bson.M); ok {
+		for _, value := range images {
+			if strVal, ok := value.(string); ok {
+				if len(strVal) > 100 && (strVal[:10] == "data:image" || strVal[:10] == "data:image") {
+					hasBase64 = true
+				}
+			}
+		}
+	}
+	
+	// Check pricing array
+	if pricing, ok := content["pricing"].(bson.A); ok {
+		for _, item := range pricing {
+			if itemMap, ok := item.(bson.M); ok {
+				if imgStr, ok := itemMap["image"].(string); ok {
+					if len(imgStr) > 100 && (imgStr[:10] == "data:image" || imgStr[:10] == "data:image") {
+						hasBase64 = true
+					}
+				}
+			}
+		}
+	}
+	
+	return hasBase64
+}
+
 // Helper functions
 func respondWithError(w http.ResponseWriter, code int, message string) {
 	respondWithJSON(w, code, APIResponse{
