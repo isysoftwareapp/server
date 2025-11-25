@@ -1555,8 +1555,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 if (file) {
                                   const reader = new FileReader();
                                   reader.onloadend = () => {
-                                    const newPricing = [...localContent.pricing];
-                                    newPricing[idx].image = reader.result as string;
+                                    const newPricing = [
+                                      ...localContent.pricing,
+                                    ];
+                                    newPricing[idx].image =
+                                      reader.result as string;
                                     updateField(["pricing"], newPricing);
                                   };
                                   reader.readAsDataURL(file);
@@ -1665,11 +1668,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                               type="text"
                               value={feature}
                               onChange={(e) =>
-                                updatePricingFeature(
-                                  idx,
-                                  fIdx,
-                                  e.target.value
-                                )
+                                updatePricingFeature(idx, fIdx, e.target.value)
                               }
                               className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
                             />

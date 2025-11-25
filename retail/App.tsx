@@ -238,7 +238,7 @@ const App: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-3xl p-10 max-w-2xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-3xl p-10 max-w-4xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setSelectedPlan(null)}
@@ -247,27 +247,31 @@ const App: React.FC = () => {
                 <X className="w-6 h-6" />
               </button>
 
-              {/* Plan Image */}
-              {selectedPlan.image && (
-                <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
-                  <img
-                    src={selectedPlan.image}
-                    alt={selectedPlan.name}
-                    className="w-full h-64 object-cover"
-                  />
-                </div>
-              )}
-
-              <div className="text-center mb-8">
-                {selectedPlan.highlight && (
-                  <div className="inline-block bg-[#498FB3] text-white text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-lg mb-4">
-                    Most Popular
+              {/* Flexbox Layout: Image Left, Content Right */}
+              <div className="flex gap-8 items-start mb-8">
+                {/* Plan Image - Left Side */}
+                {selectedPlan.image && (
+                  <div className="flex-shrink-0 w-64 h-64 rounded-2xl overflow-hidden shadow-lg">
+                    <img
+                      src={selectedPlan.image}
+                      alt={selectedPlan.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 )}
-                <h2 className="text-4xl font-bold mb-4">{selectedPlan.name}</h2>
-                <p className="text-gray-500 text-lg leading-relaxed max-w-xl mx-auto">
-                  {selectedPlan.description}
-                </p>
+
+                {/* Plan Header - Right Side */}
+                <div className="flex-1">
+                  {selectedPlan.highlight && (
+                    <div className="inline-block bg-[#498FB3] text-white text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-lg mb-4">
+                      Most Popular
+                    </div>
+                  )}
+                  <h2 className="text-4xl font-bold mb-4">{selectedPlan.name}</h2>
+                  <p className="text-gray-500 text-lg leading-relaxed">
+                    {selectedPlan.description}
+                  </p>
+                </div>
               </div>
 
               <div className="text-center mb-10 py-8 bg-gray-50 rounded-2xl">

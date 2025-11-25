@@ -7,16 +7,19 @@ Added the ability to upload images for each pricing tier. These images are displ
 ## Files Modified
 
 ### 1. `retail/types.ts`
+
 - Added `image?: string` field to `PricingTier` interface
 - This field stores the base64 encoded image data
 
 ### 2. `retail/App.tsx`
+
 - Updated the Pricing Plan Modal to display the tier image
 - Image is shown at the top of the modal with rounded corners and shadow
 - Only displays if the image exists (`selectedPlan.image`)
 - Styled with `h-64` height and `object-cover` for proper display
 
 ### 3. `retail/components/AdminPanel.tsx`
+
 - Added image upload section in the pricing tab
 - Features:
   - File upload input with drag-and-drop style UI
@@ -55,7 +58,8 @@ Added the ability to upload images for each pricing tier. These images are displ
 
 ## Styling
 
-- **Modal Image**: 
+- **Modal Image**:
+
   - Full width
   - 16rem (256px) height
   - Object-fit: cover (maintains aspect ratio)
@@ -84,6 +88,7 @@ Added the ability to upload images for each pricing tier. These images are displ
 ## Future Enhancements
 
 Potential improvements:
+
 - Image size validation
 - Image optimization/compression
 - Multiple images per tier (gallery)
