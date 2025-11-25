@@ -283,6 +283,8 @@ const DEFAULT_CONTENT: SiteContent = {
         "Loyalty points & customer database",
         "Reports & analytics",
       ],
+      image:
+        "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2000&auto=format&fit=crop",
     },
     {
       name: "KIOSK System",
@@ -298,6 +300,8 @@ const DEFAULT_CONTENT: SiteContent = {
         "Custom joint creator",
       ],
       highlight: true,
+      image:
+        "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2000&auto=format&fit=crop",
     },
     {
       name: "Full Package",
@@ -312,6 +316,8 @@ const DEFAULT_CONTENT: SiteContent = {
         "Unified product & stock management",
         "Real-time control",
       ],
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop",
     },
   ],
 };

@@ -238,7 +238,7 @@ const App: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-3xl p-10 max-w-4xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-3xl p-10 max-w-6xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setSelectedPlan(null)}
@@ -249,9 +249,9 @@ const App: React.FC = () => {
 
               {/* Flexbox Layout: Image Left, Content Right */}
               <div className="flex gap-8 items-start mb-8">
-                {/* Plan Image - Left Side */}
+                {/* Plan Image - Left Side - BIG! */}
                 {selectedPlan.image && (
-                  <div className="flex-shrink-0 w-64 h-64 rounded-2xl overflow-hidden shadow-lg">
+                  <div className="flex-shrink-0 w-96 h-96 rounded-2xl overflow-hidden shadow-2xl">
                     <img
                       src={selectedPlan.image}
                       alt={selectedPlan.name}
@@ -267,7 +267,9 @@ const App: React.FC = () => {
                       Most Popular
                     </div>
                   )}
-                  <h2 className="text-4xl font-bold mb-4">{selectedPlan.name}</h2>
+                  <h2 className="text-4xl font-bold mb-4">
+                    {selectedPlan.name}
+                  </h2>
                   <p className="text-gray-500 text-lg leading-relaxed">
                     {selectedPlan.description}
                   </p>
