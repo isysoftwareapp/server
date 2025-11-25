@@ -284,7 +284,7 @@ const DEFAULT_CONTENT: SiteContent = {
         "Reports & analytics",
       ],
       image:
-        "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2000&auto=format&fit=crop",
+        "http://103.94.239.157:8080/uploads/pricing-pos-management-system-54056dcd86b77d0e.png",
     },
     {
       name: "KIOSK System",
@@ -301,7 +301,7 @@ const DEFAULT_CONTENT: SiteContent = {
       ],
       highlight: true,
       image:
-        "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?q=80&w=2000&auto=format&fit=crop",
+        "http://103.94.239.157:8080/uploads/pricing-kiosk-system-f58d95503b625da8.png",
     },
     {
       name: "Full Package",
@@ -317,7 +317,7 @@ const DEFAULT_CONTENT: SiteContent = {
         "Real-time control",
       ],
       image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2000&auto=format&fit=crop",
+        "http://103.94.239.157:8080/uploads/pricing-full-package-(kiosk-+-pos)-75b0f04cf879e7ae.png",
     },
   ],
 };
