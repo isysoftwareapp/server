@@ -178,11 +178,11 @@ func (a *App) saveContent(w http.ResponseWriter, r *http.Request) {
 
 // uploadFile handles file uploads
 func (a *App) uploadFile(w http.ResponseWriter, r *http.Request) {
-	// Parse multipart form with max 10MB
-	if err := r.ParseMultipartForm(10 << 20); err != nil {
+	// Parse multipart form with max 20MB
+	if err := r.ParseMultipartForm(20 << 20); err != nil {
 		response := APIResponse{
 			Success: false,
-			Error:   "File too large or invalid form data",
+			Error:   "File too large (max 20MB) or invalid form data",
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
