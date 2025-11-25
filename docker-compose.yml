@@ -81,6 +81,22 @@ services:
     networks:
       - isy-network
 
+  # Kiosk Frontend
+  kiosk:
+    build:
+      context: ./kiosk
+    container_name: isy-kiosk
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_URL=https://api.isy.software
+    depends_on:
+      - isy-api
+      - mongodb
+    ports:
+      - "3002:3000"
+    networks:
+      - isy-network
+
   # Nginx reverse proxy
   nginx:
     image: nginx:alpine
@@ -99,6 +115,7 @@ services:
     depends_on:
       - healthcare
       - retail
+      - kiosk
       - isy-api
     restart: unless-stopped
     networks:

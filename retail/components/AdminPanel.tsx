@@ -1585,6 +1585,58 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         />
                       </div>
 
+                      {/* Pricing Tier Image Upload */}
+                      <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
+                          Plan Image (Modal Only)
+                        </label>
+                        <div className="space-y-2">
+                          {tier.image ? (
+                            <div className="relative group">
+                              <img
+                                src={tier.image}
+                                alt={tier.name}
+                                className="w-full h-32 object-cover rounded-lg border border-gray-200"
+                              />
+                              <button
+                                onClick={() => {
+                                  const newPricing = [...localContent.pricing];
+                                  newPricing[idx].image = undefined;
+                                  updateField(["pricing"], newPricing);
+                                }}
+                                className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#498FB3] transition-colors bg-gray-50">
+                              <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
+                              <span className="text-xs text-gray-400 font-medium">
+                                Click to upload image
+                              </span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    const reader = new FileReader();
+                                    reader.onloadend = () => {
+                                      const newPricing = [...localContent.pricing];
+                                      newPricing[idx].image = reader.result as string;
+                                      updateField(["pricing"], newPricing);
+                                    };
+                                    reader.readAsDataURL(file);
+                                  }
+                                }}
+                                className="hidden"
+                              />
+                            </label>
+                          )}
+                        </div>
+                      </div>
+
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <label className="block text-xs font-bold text-gray-400 uppercase">

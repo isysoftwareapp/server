@@ -17,6 +17,7 @@ export interface PricingTier {
   description: string;
   features: string[];
   highlight?: boolean;
+  image?: string; // Image to display in modal
 }
 
 export interface HeroContent {

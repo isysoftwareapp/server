@@ -242,10 +242,21 @@ const App: React.FC = () => {
             >
               <button
                 onClick={() => setSelectedPlan(null)}
-                className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors"
+                className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors z-10"
               >
                 <X className="w-6 h-6" />
               </button>
+
+              {/* Plan Image */}
+              {selectedPlan.image && (
+                <div className="mb-8 rounded-2xl overflow-hidden shadow-lg">
+                  <img
+                    src={selectedPlan.image}
+                    alt={selectedPlan.name}
+                    className="w-full h-64 object-cover"
+                  />
+                </div>
+              )}
 
               <div className="text-center mb-8">
                 {selectedPlan.highlight && (
@@ -296,7 +307,8 @@ const App: React.FC = () => {
                       Enterprise Support Included
                     </h4>
                     <p className="text-sm text-gray-600 leading-relaxed">
-                      Get 24/7 technical support, priority updates, and dedicated account management.
+                      Get 24/7 technical support, priority updates, and
+                      dedicated account management.
                     </p>
                   </div>
                 </div>

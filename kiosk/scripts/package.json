@@ -1,0 +1,12 @@
+{
+  "name": "firebase-exporter",
+  "version": "1.0.0",
+  "description": "Firebase data export utility for kiosk migration",
+  "main": "export-firebase.js",
+  "scripts": {
+    "export": "node export-firebase.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}

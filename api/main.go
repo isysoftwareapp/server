@@ -15,6 +15,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"isy-api/healthcare"
+	"isy-api/kiosk"
 	"isy-api/retail"
 )
 
@@ -81,6 +82,7 @@ func (a *App) setupRoutes() {
 	// Initialize handlers
 	healthcareHandlers := healthcare.NewHealthcareHandlers(a.DB)
 	retailHandlers := retail.NewRetailHandlers(a.DB)
+	kioskHandlers := kiosk.NewKioskHandlers(a.DB)
 
 	// Healthcare API v1 routes
 	healthcareAPI := a.Router.PathPrefix("/healthcare/v1").Subrouter()
@@ -101,6 +103,13 @@ func (a *App) setupRoutes() {
 	retailAPI.HandleFunc("/products/{id}", retailHandlers.DeleteProduct).Methods("DELETE")
 	retailAPI.HandleFunc("/metadata", retailHandlers.GetMetadata).Methods("GET")
 	retailAPI.HandleFunc("/metadata", retailHandlers.SaveMetadata).Methods("POST")
+
+	// Kiosk API v1 routes
+	kioskAPI := a.Router.PathPrefix("/kiosk/v1").Subrouter()
+	kioskAPI.HandleFunc("/auth", kioskHandlers.Authenticate).Methods("POST")
+	kioskAPI.HandleFunc("/products", kioskHandlers.GetProducts).Methods("GET")
+	kioskAPI.HandleFunc("/products", kioskHandlers.CreateProduct).Methods("POST")
+	kioskAPI.HandleFunc("/customers", kioskHandlers.GetCustomers).Methods("GET")
 
 	// Legacy API v1 routes (for backward compatibility)
 	api := a.Router.PathPrefix("/api/v1").Subrouter()
