@@ -293,16 +293,18 @@ const App: React.FC = () => {
                       What's Included:
                     </h3>
                     <div className="space-y-4">
-                      {selectedPlan.features.map((feature: string, idx: number) => (
-                        <div key={idx} className="flex items-start gap-4">
-                          <div className="w-6 h-6 rounded-full bg-[#ADE8F4] flex items-center justify-center shrink-0 mt-0.5">
-                            <Check className="w-4 h-4 text-black stroke-[3]" />
+                      {selectedPlan.features.map(
+                        (feature: string, idx: number) => (
+                          <div key={idx} className="flex items-start gap-4">
+                            <div className="w-6 h-6 rounded-full bg-[#ADE8F4] flex items-center justify-center shrink-0 mt-0.5">
+                              <Check className="w-4 h-4 text-black stroke-[3]" />
+                            </div>
+                            <span className="text-base text-gray-700 font-medium leading-relaxed">
+                              {feature}
+                            </span>
                           </div>
-                          <span className="text-base text-gray-700 font-medium leading-relaxed">
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
 

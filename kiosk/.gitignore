@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.*
+scripts/node_modules/
+scripts/package-lock.json
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
@@ -32,6 +34,15 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+
+# Firebase service account keys (NEVER COMMIT!)
+**/serviceAccountKey.json
+serviceAccountKey.json
+scripts/serviceAccountKey.json
+
+# Migration data (exported from Firebase)
+migration-data/
+**/migration-data/
 
 # vercel
 .vercel

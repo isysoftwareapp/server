@@ -19,7 +19,7 @@ try {
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    storageBucket: "your-project-id.appspot.com", // Replace with your actual bucket
+    storageBucket: "candy-kush.firebasestorage.app", // Your Firebase Storage bucket
   });
 
   console.log("✅ Firebase Admin initialized successfully");
