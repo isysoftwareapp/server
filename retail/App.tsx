@@ -448,7 +448,7 @@ const App: React.FC = () => {
                     <div className="text-xs text-gray-400 font-bold uppercase">
                       Daily Income
                     </div>
-                    <div className="text-xl font-bold text-black">+฿20.000</div>
+                    <div className="text-xl font-bold text-black">+฿22.800</div>
                   </div>
                 </div>
               </motion.div>
