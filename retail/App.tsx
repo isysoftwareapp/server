@@ -238,7 +238,7 @@ const App: React.FC = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-white rounded-3xl p-10 max-w-6xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-3xl p-10 max-w-7xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
             >
               <button
                 onClick={() => setSelectedPlan(null)}
@@ -247,11 +247,11 @@ const App: React.FC = () => {
                 <X className="w-6 h-6" />
               </button>
 
-              {/* Flexbox Layout: Image Left, Content Right */}
-              <div className="flex gap-8 items-start mb-8">
-                {/* Plan Image - Left Side - BIG! */}
+              {/* Two Column Layout: Image Left, Content Right */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {/* LEFT SIDE - Image 1:1 Ratio */}
                 {selectedPlan.image && (
-                  <div className="flex-shrink-0 w-96 h-96 rounded-2xl overflow-hidden shadow-2xl">
+                  <div className="w-full aspect-square rounded-2xl overflow-hidden shadow-2xl">
                     <img
                       src={selectedPlan.image}
                       alt={selectedPlan.name}
@@ -260,82 +260,87 @@ const App: React.FC = () => {
                   </div>
                 )}
 
-                {/* Plan Header - Right Side */}
-                <div className="flex-1">
+                {/* RIGHT SIDE - All Details */}
+                <div className="flex flex-col">
+                  {/* Plan Header */}
                   {selectedPlan.highlight && (
-                    <div className="inline-block bg-[#498FB3] text-white text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-lg mb-4">
+                    <div className="inline-block bg-[#498FB3] text-white text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-lg mb-4 self-start">
                       Most Popular
                     </div>
                   )}
                   <h2 className="text-4xl font-bold mb-4">
                     {selectedPlan.name}
                   </h2>
-                  <p className="text-gray-500 text-lg leading-relaxed">
+                  <p className="text-gray-500 text-lg leading-relaxed mb-8">
                     {selectedPlan.description}
                   </p>
-                </div>
-              </div>
 
-              <div className="text-center mb-10 py-8 bg-gray-50 rounded-2xl">
-                <div className="flex items-baseline justify-center gap-2">
-                  <span className="text-6xl font-bold tracking-tight text-black">
-                    ฿ {selectedPlan.price}
-                  </span>
-                  <span className="text-xl font-medium text-gray-400">
-                    {selectedPlan.period}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <h3 className="text-xl font-bold mb-6 text-slate-900">
-                  What's Included:
-                </h3>
-                <div className="space-y-4">
-                  {selectedPlan.features.map((feature: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-4">
-                      <div className="w-6 h-6 rounded-full bg-[#ADE8F4] flex items-center justify-center shrink-0 mt-0.5">
-                        <Check className="w-4 h-4 text-black stroke-[3]" />
-                      </div>
-                      <span className="text-base text-gray-700 font-medium leading-relaxed">
-                        {feature}
+                  {/* Price */}
+                  <div className="text-center mb-8 py-6 bg-gray-50 rounded-2xl">
+                    <div className="flex items-baseline justify-center gap-2">
+                      <span className="text-6xl font-bold tracking-tight text-black">
+                        ฿ {selectedPlan.price}
+                      </span>
+                      <span className="text-xl font-medium text-gray-400">
+                        {selectedPlan.period}
                       </span>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
 
-              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-8">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-[#498FB3] mt-0.5 shrink-0" />
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900 mb-1">
-                      Enterprise Support Included
-                    </h4>
-                    <p className="text-sm text-gray-600 leading-relaxed">
-                      Get 24/7 technical support, priority updates, and
-                      dedicated account management.
-                    </p>
+                  {/* Features List */}
+                  <div className="mb-8 flex-1 overflow-y-auto">
+                    <h3 className="text-xl font-bold mb-6 text-slate-900">
+                      What's Included:
+                    </h3>
+                    <div className="space-y-4">
+                      {selectedPlan.features.map((feature: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-4">
+                          <div className="w-6 h-6 rounded-full bg-[#ADE8F4] flex items-center justify-center shrink-0 mt-0.5">
+                            <Check className="w-4 h-4 text-black stroke-[3]" />
+                          </div>
+                          <span className="text-base text-gray-700 font-medium leading-relaxed">
+                            {feature}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Support Info */}
+                  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-8">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-[#498FB3] mt-0.5 shrink-0" />
+                      <div>
+                        <h4 className="font-bold text-sm text-slate-900 mb-1">
+                          Enterprise Support Included
+                        </h4>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          Get 24/7 technical support, priority updates, and
+                          dedicated account management.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-4">
+                    <button
+                      onClick={() => setSelectedPlan(null)}
+                      className="flex-1 py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                    >
+                      Close
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedPlan(null);
+                        scrollToSection("contact");
+                      }}
+                      className="flex-1 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-95 bg-black text-white hover:bg-[#498FB3] shadow-lg hover:shadow-xl"
+                    >
+                      Get Started
+                    </button>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex gap-4">
-                <button
-                  onClick={() => setSelectedPlan(null)}
-                  className="flex-1 py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedPlan(null);
-                    scrollToSection("contact");
-                  }}
-                  className="flex-1 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-95 bg-black text-white hover:bg-[#498FB3] shadow-lg hover:shadow-xl"
-                >
-                  Get Started
-                </button>
               </div>
             </motion.div>
           </div>
