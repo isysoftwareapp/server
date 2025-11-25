@@ -90,6 +90,9 @@ const App: React.FC = () => {
     null
   );
 
+  // Pricing Plan Modal
+  const [selectedPlan, setSelectedPlan] = useState<any>(null);
+
   // Check for admin token updates (in case it changes during session)
   React.useEffect(() => {
     const token = localStorage.getItem("admin_token");
@@ -224,6 +227,100 @@ const App: React.FC = () => {
             product={selectedProduct}
             onClose={() => setSelectedProduct(null)}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Pricing Plan Modal */}
+      <AnimatePresence>
+        {selectedPlan && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-white rounded-3xl p-10 max-w-2xl w-full shadow-2xl relative max-h-[90vh] overflow-y-auto"
+            >
+              <button
+                onClick={() => setSelectedPlan(null)}
+                className="absolute top-6 right-6 text-gray-400 hover:text-black transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="text-center mb-8">
+                {selectedPlan.highlight && (
+                  <div className="inline-block bg-[#498FB3] text-white text-xs font-bold px-6 py-2 rounded-full uppercase tracking-widest shadow-lg mb-4">
+                    Most Popular
+                  </div>
+                )}
+                <h2 className="text-4xl font-bold mb-4">{selectedPlan.name}</h2>
+                <p className="text-gray-500 text-lg leading-relaxed max-w-xl mx-auto">
+                  {selectedPlan.description}
+                </p>
+              </div>
+
+              <div className="text-center mb-10 py-8 bg-gray-50 rounded-2xl">
+                <div className="flex items-baseline justify-center gap-2">
+                  <span className="text-6xl font-bold tracking-tight text-black">
+                    ฿ {selectedPlan.price}
+                  </span>
+                  <span className="text-xl font-medium text-gray-400">
+                    {selectedPlan.period}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-6 text-slate-900">
+                  What's Included:
+                </h3>
+                <div className="space-y-4">
+                  {selectedPlan.features.map((feature: string, idx: number) => (
+                    <div key={idx} className="flex items-start gap-4">
+                      <div className="w-6 h-6 rounded-full bg-[#ADE8F4] flex items-center justify-center shrink-0 mt-0.5">
+                        <Check className="w-4 h-4 text-black stroke-[3]" />
+                      </div>
+                      <span className="text-base text-gray-700 font-medium leading-relaxed">
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-8">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 text-[#498FB3] mt-0.5 shrink-0" />
+                  <div>
+                    <h4 className="font-bold text-sm text-slate-900 mb-1">
+                      Enterprise Support Included
+                    </h4>
+                    <p className="text-sm text-gray-600 leading-relaxed">
+                      Get 24/7 technical support, priority updates, and dedicated account management.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setSelectedPlan(null)}
+                  className="flex-1 py-4 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedPlan(null);
+                    scrollToSection("contact");
+                  }}
+                  className="flex-1 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-95 bg-black text-white hover:bg-[#498FB3] shadow-lg hover:shadow-xl"
+                >
+                  Get Started
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
@@ -1014,6 +1111,7 @@ const App: React.FC = () => {
                 </div>
 
                 <button
+                  onClick={() => setSelectedPlan(tier)}
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform active:scale-95 ${
                     tier.highlight
                       ? "bg-[#ADE8F4] text-black hover:bg-white hover:text-black"
