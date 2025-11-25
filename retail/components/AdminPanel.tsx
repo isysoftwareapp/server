@@ -1516,168 +1516,171 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                       Tier {idx + 1}
                     </div>
 
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
-                          Plan Name
+                    {/* Flexbox layout: Image on left, Content on right */}
+                    <div className="flex gap-4">
+                      {/* Image Section - Left Side */}
+                      <div className="flex-shrink-0">
+                        <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
+                          Plan Image
                         </label>
-                        <input
-                          type="text"
-                          value={tier.name}
-                          onChange={(e) => {
-                            const newPricing = [...localContent.pricing];
-                            newPricing[idx].name = e.target.value;
-                            updateField(["pricing"], newPricing);
-                          }}
-                          className="w-full p-2 font-bold text-lg border-b border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
-                        />
-                      </div>
-                      <div className="flex gap-2">
-                        <div className="flex-1">
-                          <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
-                            Price
-                          </label>
-                          <div className="flex items-center">
-                            <span className="text-gray-400 font-bold mr-2">
-                              ฿
-                            </span>
-                            <input
-                              type="text"
-                              value={tier.price}
-                              onChange={(e) => {
+                        {tier.image ? (
+                          <div className="relative group/img">
+                            <img
+                              src={tier.image}
+                              alt={tier.name}
+                              className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                            />
+                            <button
+                              onClick={() => {
                                 const newPricing = [...localContent.pricing];
-                                newPricing[idx].price = e.target.value;
+                                newPricing[idx].image = undefined;
                                 updateField(["pricing"], newPricing);
                               }}
-                              className="w-full p-2 font-bold text-xl border-b border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
-                            />
+                              className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover/img:opacity-100 transition-opacity hover:bg-red-600"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
-                        </div>
-                        <div className="w-24">
+                        ) : (
+                          <label className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#498FB3] transition-colors bg-gray-50">
+                            <ImageIcon className="w-6 h-6 text-gray-400 mb-1" />
+                            <span className="text-[10px] text-gray-400 font-medium text-center px-2">
+                              Upload
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onloadend = () => {
+                                    const newPricing = [...localContent.pricing];
+                                    newPricing[idx].image = reader.result as string;
+                                    updateField(["pricing"], newPricing);
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                              className="hidden"
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                      {/* Content Section - Right Side */}
+                      <div className="flex-1 space-y-4">
+                        <div>
                           <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
-                            Period
+                            Plan Name
                           </label>
                           <input
                             type="text"
-                            value={tier.period}
+                            value={tier.name}
                             onChange={(e) => {
                               const newPricing = [...localContent.pricing];
-                              newPricing[idx].period = e.target.value;
+                              newPricing[idx].name = e.target.value;
                               updateField(["pricing"], newPricing);
                             }}
-                            className="w-full p-2 text-sm border-b border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
+                            className="w-full p-2 font-bold text-lg border-b border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <div className="flex-1">
+                            <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
+                              Price
+                            </label>
+                            <div className="flex items-center">
+                              <span className="text-gray-400 font-bold mr-2">
+                                ฿
+                              </span>
+                              <input
+                                type="text"
+                                value={tier.price}
+                                onChange={(e) => {
+                                  const newPricing = [...localContent.pricing];
+                                  newPricing[idx].price = e.target.value;
+                                  updateField(["pricing"], newPricing);
+                                }}
+                                className="w-full p-2 font-bold text-xl border-b border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                          <div className="w-24">
+                            <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
+                              Period
+                            </label>
+                            <input
+                              type="text"
+                              value={tier.period}
+                              onChange={(e) => {
+                                const newPricing = [...localContent.pricing];
+                                newPricing[idx].period = e.target.value;
+                                updateField(["pricing"], newPricing);
+                              }}
+                              className="w-full p-2 text-sm border-b border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
+                            Description
+                          </label>
+                          <textarea
+                            value={tier.description}
+                            onChange={(e) => {
+                              const newPricing = [...localContent.pricing];
+                              newPricing[idx].description = e.target.value;
+                              updateField(["pricing"], newPricing);
+                            }}
+                            rows={2}
+                            className="w-full p-2 text-sm border border-gray-200 rounded-lg bg-white text-black focus:border-[#498FB3] focus:outline-none"
                           />
                         </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-1">
-                          Description
-                        </label>
-                        <textarea
-                          value={tier.description}
-                          onChange={(e) => {
-                            const newPricing = [...localContent.pricing];
-                            newPricing[idx].description = e.target.value;
-                            updateField(["pricing"], newPricing);
-                          }}
-                          rows={2}
-                          className="w-full p-2 text-sm border border-gray-200 rounded-lg bg-white text-black focus:border-[#498FB3] focus:outline-none"
-                        />
-                      </div>
+                    </div>
 
-                      {/* Pricing Tier Image Upload */}
-                      <div>
-                        <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
-                          Plan Image (Modal Only)
+                    {/* Features Section - Full Width Below */}
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-bold text-gray-400 uppercase">
+                          Features
                         </label>
-                        <div className="space-y-2">
-                          {tier.image ? (
-                            <div className="relative group">
-                              <img
-                                src={tier.image}
-                                alt={tier.name}
-                                className="w-full h-32 object-cover rounded-lg border border-gray-200"
-                              />
-                              <button
-                                onClick={() => {
-                                  const newPricing = [...localContent.pricing];
-                                  newPricing[idx].image = undefined;
-                                  updateField(["pricing"], newPricing);
-                                }}
-                                className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
-                            </div>
-                          ) : (
-                            <label className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#498FB3] transition-colors bg-gray-50">
-                              <ImageIcon className="w-8 h-8 text-gray-400 mb-2" />
-                              <span className="text-xs text-gray-400 font-medium">
-                                Click to upload image
-                              </span>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                      const newPricing = [...localContent.pricing];
-                                      newPricing[idx].image = reader.result as string;
-                                      updateField(["pricing"], newPricing);
-                                    };
-                                    reader.readAsDataURL(file);
-                                  }
-                                }}
-                                className="hidden"
-                              />
-                            </label>
-                          )}
-                        </div>
+                        <button
+                          onClick={() => addPricingFeature(idx)}
+                          className="text-xs bg-[#498FB3] hover:bg-[#3d7a9a] text-white px-2 py-1 rounded flex items-center gap-1"
+                        >
+                          <Plus className="w-3 h-3" />
+                          Add
+                        </button>
                       </div>
-
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <label className="block text-xs font-bold text-gray-400 uppercase">
-                            Features
-                          </label>
-                          <button
-                            onClick={() => addPricingFeature(idx)}
-                            className="text-xs bg-[#498FB3] hover:bg-[#3d7a9a] text-white px-2 py-1 rounded flex items-center gap-1"
+                      <div className="space-y-2">
+                        {tier.features.map((feature, fIdx) => (
+                          <div
+                            key={fIdx}
+                            className="flex gap-2 items-center group"
                           >
-                            <Plus className="w-3 h-3" />
-                            Add
-                          </button>
-                        </div>
-                        <div className="space-y-2">
-                          {tier.features.map((feature, fIdx) => (
-                            <div
-                              key={fIdx}
-                              className="flex gap-2 items-center group"
+                            <div className="w-1.5 h-1.5 bg-[#ADE8F4] rounded-full mt-2 shrink-0"></div>
+                            <input
+                              type="text"
+                              value={feature}
+                              onChange={(e) =>
+                                updatePricingFeature(
+                                  idx,
+                                  fIdx,
+                                  e.target.value
+                                )
+                              }
+                              className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
+                            />
+                            <button
+                              onClick={() => removePricingFeature(idx, fIdx)}
+                              className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 p-1"
                             >
-                              <div className="w-1.5 h-1.5 bg-[#ADE8F4] rounded-full mt-2 shrink-0"></div>
-                              <input
-                                type="text"
-                                value={feature}
-                                onChange={(e) =>
-                                  updatePricingFeature(
-                                    idx,
-                                    fIdx,
-                                    e.target.value
-                                  )
-                                }
-                                className="flex-1 p-1 text-sm border-b border-transparent hover:border-gray-200 bg-transparent text-black focus:border-[#498FB3] focus:outline-none"
-                              />
-                              <button
-                                onClick={() => removePricingFeature(idx, fIdx)}
-                                className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 p-1"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
