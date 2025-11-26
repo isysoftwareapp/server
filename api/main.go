@@ -79,8 +79,12 @@ func (a *App) setupRoutes() {
 	// Health check
 	a.Router.HandleFunc("/health", a.healthCheck).Methods("GET")
 	
-	// Serve uploaded files
-	a.Router.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
+	// Serve uploaded files from /root/uploads (Docker volume mount)
+	uploadsDir := os.Getenv("UPLOADS_DIR")
+	if uploadsDir == "" {
+		uploadsDir = "/root/uploads" // Default Docker location
+	}
+	a.Router.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir(uploadsDir))))
 
 	// Initialize handlers
 	healthcareHandlers := healthcare.NewHealthcareHandlers(a.DB)
